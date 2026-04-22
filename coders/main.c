@@ -5,33 +5,32 @@
 /*                                                    +:+ +:+         +:+     */
 /*   By: finorako <finorako@student.42antananarivo  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2026/04/21 08:58:38 by finorako          #+#    #+#             */
-/*   Updated: 2026/04/21 12:33:04 by finorako         ###   ########.fr       */
+/*   Created: 2026/04/22 08:54:59 by finorako          #+#    #+#             */
+/*   Updated: 2026/04/22 13:58:11 by finorako         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "coders/coders.h"
-#include "coders/error_headers.h"
-#include "coders/memory_header.h"
-#include "coders/util_header.h"
-#include <pthread.h>
+#include "codexion.h"
 #include <stdio.h>
-#include <stdlib.h>
 
 int	main(int ac, char **av)
 {
-	t_coders_info	info;
-	t_coders		*coders;
+	t_data	data;
 
-	coders = NULL;
 	if (ac != 9)
-		return (1);
-	if (!arg_is_valid(av + 1, ac - 1, &info))
 	{
-		printf("Arg invalid\n");
+		printf(ARG_MSG, FILE_NAME);
 		return (1);
 	}
-	coders = create_coders(atoi(av[1]));
-	free_memory(&coders);
+	if (!arg_checker(av + 1, ac - 1))
+		return (1);
+	parser(av + 1, &data);
+	if (!init(&data))
+	{
+		printf(INIT_ERROR);
+		return (1);
+	}
+	join_thread(&data);
+	free_memory(&data);
 	return (0);
 }

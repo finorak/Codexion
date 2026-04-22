@@ -1,20 +1,19 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   memory_header.h                                    :+:      :+:    :+:   */
+/*   free_memory.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: finorako <finorako@student.42antananarivo  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2026/04/21 11:48:36 by finorako          #+#    #+#             */
-/*   Updated: 2026/04/21 11:50:13 by finorako         ###   ########.fr       */
+/*   Created: 2026/04/22 12:00:14 by finorako          #+#    #+#             */
+/*   Updated: 2026/04/22 13:47:54 by finorako         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef MEMORY_HEADER_H
+#include <stdlib.h>
+#include "../codexion.h"
 
-# define MEMORY_HEADER_H
-# include "coders.h"
-
-void	free_memory(t_coders **coders);
-
-#endif
+void	free_memory(t_data *data)
+{
+	free(data->coders);
+}

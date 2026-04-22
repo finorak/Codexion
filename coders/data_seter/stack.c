@@ -1,26 +1,21 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   free_coders.c                                      :+:      :+:    :+:   */
+/*   stack.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: finorako <finorako@student.42antananarivo  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2026/04/21 11:44:53 by finorako          #+#    #+#             */
-/*   Updated: 2026/04/21 12:28:39 by finorako         ###   ########.fr       */
+/*   Created: 2026/04/22 11:26:39 by finorako          #+#    #+#             */
+/*   Updated: 2026/04/22 12:58:38 by finorako         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include <stdlib.h>
-#include "../../coders/coders.h"
+#include "../codexion.h"
 
-void	free_memory(t_coders **coders)
+t_coder	create_coder(t_data *data)
 {
-	t_coders	*temp;
+	t_coder	coder;
 
-	while (*coders)
-	{
-		temp = (*coders)->next;
-		free(*coders);
-		*coders = temp;
-	}
+	coder.data = data;
+	return (coder);
 }

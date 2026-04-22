@@ -1,15 +1,25 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   burnout.c                                          :+:      :+:    :+:   */
+/*   join_thread.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: finorako <finorako@student.42antananarivo  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2026/04/21 12:40:52 by finorako          #+#    #+#             */
-/*   Updated: 2026/04/21 12:41:24 by finorako         ###   ########.fr       */
+/*   Created: 2026/04/22 12:14:40 by finorako          #+#    #+#             */
+/*   Updated: 2026/04/22 12:23:40 by finorako         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-void	burnout(void)
+#include "../codexion.h"
+
+void	join_thread(t_data *data)
 {
+	int	index;
+
+	index = 0;
+	while (index < data->nb_coders)
+	{
+		pthread_join(data->coders[index].thread_id, NULL);
+		index++;
+	}
 }
