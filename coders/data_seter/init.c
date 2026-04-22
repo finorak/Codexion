@@ -6,12 +6,10 @@
 /*   By: finorako <finorako@student.42antananarivo  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/04/22 11:33:38 by finorako          #+#    #+#             */
-/*   Updated: 2026/04/22 13:25:34 by finorako         ###   ########.fr       */
+/*   Updated: 2026/04/22 16:57:54 by finorako         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include <pthread.h>
-#include <stdbool.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include "../codexion.h"
@@ -64,6 +62,7 @@ bool	init_coders(t_data *data)
 	while (index < data->nb_coders)
 	{
 		data->coders[index] = create_coder(data);
+		data->coders[index].index = (index + 1) % data->nb_coders;
 		index++;
 	}
 	return (true);

@@ -11,18 +11,22 @@ SRCS = main.c \
 	   data_seter/stack.c \
 	   data_seter/join_thread.c \
 	   utils/arg_checker.c \
-	   utils/free_memory.c
+	   utils/free_memory.c \
+	   utils/get_time.c \
+	   utils/logs.c
+
+HEADERS = codexion.h
 
 all: $(NAME)
 
 %.o: %.c
 	$(CC) $(FLAGS) -c $< -o $@
 
-$(NAME): $(OBJ)
+$(NAME): lint $(OBJ)
 	$(CC) $(FLAGS) $(PTHREAD) $(OBJ) -o $(NAME)
 
 lint:
-	$(NORMINETT) $(SRCS)
+	$(NORMINETT) $(SRCS) $(HEADERS)
 
 debug:
 	$(VALGRIND) ./$(NAME) 5 500 300 400 200 3 500 fifo

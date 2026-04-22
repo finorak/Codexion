@@ -23,6 +23,8 @@ static bool	ft_isdigit(char *str)
 	index = 0;
 	if (str[0] == '+')
 		index++;
+	if (!str[index])
+		return (false);
 	while (str[index])
 	{
 		if (!('0' <= str[index] && str[index] <= '9'))
@@ -82,9 +84,10 @@ void	parser(char **av, t_data *data)
 	data->nb_coders = atoi(av[0]);
 	data->nb_dongles = atoi(av[0]);
 	data->burnout_time = time_parser(av[1]);
-	data->debug_time = time_parser(av[2]);
-	data->refactor_time = time_parser(av[3]);
-	data->compile_required = atoi(av[4]);
-	data->dongle_cooldown = time_parser(av[5]);
-	data->scheduler = av[6];
+	data->compile_time = time_parser(av[2]);
+	data->debug_time = time_parser(av[3]);
+	data->refactor_time = time_parser(av[4]);
+	data->compile_required = atoi(av[5]);
+	data->dongle_cooldown = time_parser(av[6]);
+	data->scheduler = av[7];
 }
