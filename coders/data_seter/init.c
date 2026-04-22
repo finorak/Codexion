@@ -50,7 +50,7 @@ bool	init_coders(t_data *data)
 	while (index < data->nb_coders)
 	{
 		data->coders[index] = create_coder(data);
-		data->coders[index]->index = (index + 1) % data->nb_coders;
+		data->coders[index]->index = index % data->nb_coders + 1;
 		index++;
 	}
 	return (true);

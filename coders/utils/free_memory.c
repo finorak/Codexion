@@ -21,7 +21,20 @@ void	release(t_data *data)
 	while (index < data->nb_coders)
 	{
 		pthread_mutex_destroy(&data->coders[index]->mutex);
-		free(data->coders[index]);
+		if (data->coders[index]->right_dongle)
+		{
+			if (data->coders[index]->right_dongle->name)
+				free(data->coders[index]->right_dongle->name);
+			free(data->coders[index]->right_dongle);
+		}
+		if (data->coders[index]->left_dongle)
+		{
+			if (data->coders[index]->left_dongle->name)
+				free(data->coders[index]->left_dongle->name);
+			free(data->coders[index]->left_dongle);
+		}
+		if (data->coders[index])
+			free(data->coders[index]);
 		index++;
 	}
 }
@@ -29,5 +42,6 @@ void	release(t_data *data)
 void	free_memory(t_data *data)
 {
 	release(data);
-	free(data->coders);
+	if (data->coders)
+		free(data->coders);
 }

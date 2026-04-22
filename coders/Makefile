@@ -15,7 +15,7 @@ SRCS = main.c \
 	   utils/free_memory.c \
 	   utils/get_time.c \
 	   utils/logs.c \
-	   simulate/dongle_management.c
+	   simulate/dongle_manager.c
 
 HEADERS = codexion.h
 
@@ -24,7 +24,7 @@ all: $(NAME)
 %.o: %.c
 	$(CC) $(FLAGS) -c $< -o $@
 
-$(NAME):$(OBJ)
+$(NAME):$(OBJ) $(HEADERS)
 	$(CC) $(FLAGS) $(PTHREAD) $(OBJ) -o $(NAME)
 
 lint:

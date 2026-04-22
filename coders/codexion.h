@@ -25,15 +25,18 @@
 # define COMPILE "compil"
 # define DEBUG "debugg"
 # define REFACTOR "refactor"
-# define CODE_LOG "%lld %d is %sing"
+# define CODE_LOG "%lld %d is %sing\n"
 # define TAKE_DONGLE "dongle"
+# define RIGHT_DONGLE_NAME "right dongle"
+# define LEFT_DONGLE_NAME "left dongle"
+# define DONGLE_MSG "%lld %d has taken %s\n"
 
 typedef struct s_data	t_data;
 
 typedef struct s_dongle
 {
 	long long	cooldown;
-	//char		name[10];
+	char		*name;
 }					t_dongle;
 
 typedef struct s_coder
@@ -41,8 +44,8 @@ typedef struct s_coder
 	pthread_mutex_t	mutex;
 	pthread_cond_t	cond;
 	pthread_t		thread_id;
-	t_dongle		right_dongle;
-	t_dongle		left_dongle;
+	t_dongle		*right_dongle;
+	t_dongle		*left_dongle;
 	t_data			*data;
 	int				max_compile;
 	int				index;
@@ -76,6 +79,8 @@ t_coder				*create_coder(t_data *data);
 bool				arg_checker(char **av, int size);
 
 void				parser(char **av, t_data *data);
+
+void				print_log(t_coder *coder, char *action);
 
 bool				init_coders(t_data *data);
 
