@@ -6,7 +6,7 @@
 /*   By: finorako <finorako@student.42antananarivo  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/04/22 12:00:14 by finorako          #+#    #+#             */
-/*   Updated: 2026/04/22 16:19:21 by finorako         ###   ########.fr       */
+/*   Updated: 2026/04/22 19:07:13 by finorako         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,7 +20,8 @@ void	release(t_data *data)
 	index = 0;
 	while (index < data->nb_coders)
 	{
-		pthread_mutex_destroy(&data->coders[index].mutex);
+		pthread_mutex_destroy(&data->coders[index]->mutex);
+		free(data->coders[index]);
 		index++;
 	}
 }

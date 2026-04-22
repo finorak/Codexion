@@ -1,25 +1,11 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   stack.c                                            :+:      :+:    :+:   */
+/*   dongle_management.c                                :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: finorako <finorako@student.42antananarivo  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2026/04/22 11:26:39 by finorako          #+#    #+#             */
-/*   Updated: 2026/04/22 19:05:21 by finorako         ###   ########.fr       */
+/*   Created: 2026/04/22 19:08:31 by finorako          #+#    #+#             */
+/*   Updated: 2026/04/22 19:08:33 by finorako         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
-
-#include <stdlib.h>
-#include "../codexion.h"
-
-t_coder	*create_coder(t_data *data)
-{
-	t_coder	*coder;
-
-	coder = (t_coder *)malloc(sizeof(t_coder));
-	if (!coder)
-		return (NULL);
-	coder->data = data;
-	return (coder);
-}

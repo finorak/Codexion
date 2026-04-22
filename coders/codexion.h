@@ -6,7 +6,7 @@
 /*   By: finorako <finorako@student.42antananarivo  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/04/22 10:32:30 by finorako          #+#    #+#             */
-/*   Updated: 2026/04/22 16:52:16 by finorako         ###   ########.fr       */
+/*   Updated: 2026/04/22 19:05:54 by finorako         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,6 +39,7 @@ typedef struct s_dongle
 typedef struct s_coder
 {
 	pthread_mutex_t	mutex;
+	pthread_cond_t	cond;
 	pthread_t		thread_id;
 	t_dongle		right_dongle;
 	t_dongle		left_dongle;
@@ -54,20 +55,23 @@ typedef struct s_coder
 typedef struct s_data
 {
 	pthread_mutex_t	mutex;
+	pthread_cond_t	cond;
 	long long		burnout_time;
 	long long		compile_time;
 	long long		debug_time;
 	long long		refactor_time;
 	long long		dongle_cooldown;
 	t_dongle		*dongles;
-	t_coder			*coders;
+	t_coder			**coders;
 	char			*scheduler;
 	int				nb_coders;
 	int				nb_dongles;
 	int				compile_required;
 }					t_data;
 
-t_coder				create_coder(t_data *data);
+long long			get_time(void);
+
+t_coder				*create_coder(t_data *data);
 
 bool				arg_checker(char **av, int size);
 
@@ -77,9 +81,13 @@ bool				init_coders(t_data *data);
 
 bool				init(t_data *data);
 
+void				simulate(void *data);
+
 void				join_thread(t_data *data);
 
 void				free_memory(t_data *data);
+
+void				*activate_coder(void *arg);
 
 int					ft_strcmp(char *s1, char *s2);
 #endif
