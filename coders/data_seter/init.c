@@ -13,13 +13,16 @@
 #include <stdlib.h>
 #include "../codexion.h"
 
-void	init_mutex(t_data *data)
+static void	que_utils(t_data *data)
 {
 	int	index;
 
 	index = 0;
+	pthread_mutex_init(&data->mutex, NULL);
+	pthread_cond_init(&data->cond, NULL);
 	while (index < data->nb_coders)
 	{
+		pthread_cond_init(&data->coders[index]->cond, NULL);
 		pthread_mutex_init(&data->coders[index]->mutex, NULL);
 		index++;
 	}
@@ -29,7 +32,6 @@ void	init_thread(t_data *data)
 {
 	int	index;
 
-	pthread_mutex_init(&data->mutex, NULL);
 	index = 0;
 	while (index < data->nb_coders)
 	{
@@ -50,6 +52,11 @@ bool	init_coders(t_data *data)
 	while (index < data->nb_coders)
 	{
 		data->coders[index] = create_coder(data);
+		if (!data->coders[index])
+		{
+			free_memory(data);
+			return (false);
+		}
 		data->coders[index]->index = index % data->nb_coders + 1;
 		index++;
 	}
@@ -60,7 +67,7 @@ bool	init(t_data *data)
 {
 	if (!init_coders(data))
 		return (false);
-	init_mutex(data);
+	que_utils(data);
 	init_thread(data);
 	return (true);
 }

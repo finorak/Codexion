@@ -15,7 +15,8 @@ SRCS = main.c \
 	   utils/free_memory.c \
 	   utils/get_time.c \
 	   utils/logs.c \
-	   simulate/dongle_manager.c
+	   simulate/dongle_manager.c \
+	   simulate/scheduling.c
 
 HEADERS = codexion.h
 

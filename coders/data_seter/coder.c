@@ -10,9 +10,8 @@
 /*                                                                            */
 /* ************************************************************************** */
 
+#include <unistd.h>
 #include "../codexion.h"
-#include <bits/types/struct_timeval.h>
-#include <stdio.h>
 
 static void	execute_action(t_coder *coder, char *action)
 {
@@ -23,7 +22,10 @@ static void	execute_action(t_coder *coder, char *action)
 		print_log(coder, action);
 	else if (!ft_strcmp(REFACTOR, action))
 		print_log(coder, action);
+	else if (!ft_strcmp(TAKE_DONGLE, action))
+		print_log(coder, action);
 	pthread_mutex_unlock(&coder->data->mutex);
+	usleep(100000);
 }
 
 bool	coders_active(t_data *data)
@@ -45,6 +47,7 @@ void	*activate_coder(void *arg)
 	t_coder			*coder;
 
 	coder = (t_coder *)arg;
+	execute_action(coder, TAKE_DONGLE);
 	execute_action(coder, COMPILE);
 	execute_action(coder, DEBUG);
 	execute_action(coder, REFACTOR);

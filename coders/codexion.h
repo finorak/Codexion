@@ -25,17 +25,21 @@
 # define COMPILE "compil"
 # define DEBUG "debugg"
 # define REFACTOR "refactor"
-# define CODE_LOG "%lld %d is %sing\n"
 # define TAKE_DONGLE "dongle"
-# define RIGHT_DONGLE_NAME "right dongle"
-# define LEFT_DONGLE_NAME "left dongle"
-# define DONGLE_MSG "%lld %d has taken %s\n"
+# define RIGHT_DONGLE_NAME "dongle"
+# define LEFT_DONGLE_NAME "dongle"
+# define BURNED_OUT "burned"
+# define BURNED_OUT_MSG "[%lld] %d burned out\n"
+# define CODE_LOG "[%lld] %d is %sing\n"
+# define DONGLE_MSG "[%lld] %d has taken %s\n"
 
 typedef struct s_data	t_data;
 
 typedef struct s_dongle
 {
 	long long	cooldown;
+	bool		newest;
+	bool		in_use;
 	char		*name;
 }					t_dongle;
 
@@ -47,6 +51,8 @@ typedef struct s_coder
 	t_dongle		*right_dongle;
 	t_dongle		*left_dongle;
 	t_data			*data;
+	int				dongle_count;
+	int				compile_count;
 	int				max_compile;
 	int				index;
 }					t_coder;
@@ -64,7 +70,6 @@ typedef struct s_data
 	long long		debug_time;
 	long long		refactor_time;
 	long long		dongle_cooldown;
-	t_dongle		*dongles;
 	t_coder			**coders;
 	char			*scheduler;
 	int				nb_coders;
@@ -83,6 +88,12 @@ void				parser(char **av, t_data *data);
 void				print_log(t_coder *coder, char *action);
 
 bool				init_coders(t_data *data);
+
+void				request_dongle(t_coder *coder);
+
+void				take_requested_dongle(t_coder *coder);
+
+void				release_dongle(t_coder *coder);
 
 bool				init(t_data *data);
 

@@ -18,6 +18,8 @@ char	*ft_strdup(char *str)
 	char	*value;
 	int		index;
 
+	if (!str)
+		return (NULL);
 	index = 0;
 	while (str[index])
 		index++;
@@ -43,7 +45,25 @@ t_dongle	*create_dongle(long long cooldown, char *dongle_name)
 		return (NULL);
 	dongle->cooldown = cooldown;
 	dongle->name = ft_strdup(dongle_name);
+	if (!dongle->name)
+		return (NULL);
+	dongle->newest = false;
+	dongle->in_use = false;
 	return (dongle);
+}
+
+static bool	free_dongle(t_coder *coder)
+{
+	if (!coder->left_dongle)
+	{
+		if (coder->right_dongle)
+			free(coder->right_dongle);
+		if (coder->right_dongle->name)
+			free(coder->right_dongle->name);
+		free(coder);
+		return (true);
+	}
+	return (false);
 }
 
 t_coder	*create_coder(t_data *data)
@@ -54,9 +74,17 @@ t_coder	*create_coder(t_data *data)
 	if (!coder)
 		return (NULL);
 	coder->data = data;
+	coder->dongle_count = 0;
 	coder->right_dongle = create_dongle(data->dongle_cooldown,
 			RIGHT_DONGLE_NAME);
+	if (!coder->right_dongle)
+	{
+		free(coder);
+		return (NULL);
+	}
 	coder->left_dongle = create_dongle(data->dongle_cooldown,
 			LEFT_DONGLE_NAME);
+	if (free_dongle(coder))
+		return (NULL);
 	return (coder);
 }

@@ -1,36 +1,25 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   main.c                                             :+:      :+:    :+:   */
+/*   scheduling.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: finorako <finorako@student.42antananarivo  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2026/04/22 08:54:59 by finorako          #+#    #+#             */
-/*   Updated: 2026/04/22 19:02:01 by finorako         ###   ########.fr       */
+/*   Created: 2026/04/22 22:08:50 by finorako          #+#    #+#             */
+/*   Updated: 2026/04/22 22:09:50 by finorako         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include <stdio.h>
-#include "codexion.h"
+#include "../codexion.h"
 
-int	main(int ac, char **av)
+void	fifo_scheduler(t_data *data)
 {
-	t_data	data;
+	(void)data;
+	return ;
+}
 
-	if (ac != 9)
-	{
-		printf(ARG_MSG, FILE_NAME);
-		return (1);
-	}
-	if (!arg_checker(av + 1, ac - 1))
-		return (1);
-	parser(av + 1, &data);
-	if (!init(&data))
-	{
-		printf(INIT_ERROR);
-		return (1);
-	}
-	join_thread(&data);
-	free_memory(&data);
-	return (0);
+void	edf_scheduler(t_data *data)
+{
+	(void)data;
+	return ;
 }
