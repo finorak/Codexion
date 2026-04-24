@@ -15,7 +15,8 @@ SRCS = main.c \
 	   utils/free_memory.c \
 	   utils/bench.c \
 	   simulate/dongle_manager.c \
-	   simulate/scheduling.c
+	   simulate/scheduling.c \
+	   wait_lst_manager/stack.c
 
 HEADERS = codexion.h
 

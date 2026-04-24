@@ -10,6 +10,7 @@
 /*                                                                            */
 /* ************************************************************************** */
 
+#include <pthread.h>
 #include <stdlib.h>
 #include "../codexion.h"
 
@@ -25,6 +26,8 @@ static void	que_utils(t_data *data)
 	{
 		pthread_cond_init(&data->coders[index]->cond, NULL);
 		pthread_mutex_init(&data->coders[index]->mutex, NULL);
+		pthread_cond_init(&data->dongles[index]->cond, NULL);
+		pthread_mutex_init(&data->dongles[index]->mutex, NULL);
 		index++;
 	}
 }
@@ -42,7 +45,7 @@ static void	init_thread(t_data *data)
 	}
 }
 
-bool	init_coders(t_data *data)
+static bool	init_coders(t_data *data)
 {
 	int	index;
 
@@ -66,7 +69,7 @@ bool	init_coders(t_data *data)
 	return (true);
 }
 
-bool	init_dongles(t_data *data)
+static bool	init_dongles(t_data *data)
 {
 	int	index;
 
@@ -96,9 +99,9 @@ bool	init(t_data *data)
 {
 	if (!init_coders(data))
 		return (false);
-	que_utils(data);
 	if (!init_dongles(data))
 		return (false);
+	que_utils(data);
 	init_thread(data);
 	return (true);
 }

@@ -39,6 +39,8 @@ static void	release_dongles(t_data *data)
 	{
 		if (data->dongles[index])
 		{
+			pthread_mutex_destroy(&data->dongles[index]->mutex);
+			pthread_cond_destroy(&data->dongles[index]->cond);
 			free(data->dongles[index]->name);
 			free(data->dongles[index]);
 		}

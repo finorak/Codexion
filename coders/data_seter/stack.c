@@ -10,6 +10,7 @@
 /*                                                                            */
 /* ************************************************************************** */
 
+#include <pthread.h>
 #include <stdlib.h>
 #include "../codexion.h"
 
@@ -40,11 +41,13 @@ t_dongle	*create_dongle(long long cooldown, char *dongle_name)
 {
 	t_dongle	*dongle;
 
-	dongle = (t_dongle *)malloc(sizeof(t_dongle));
+	dongle = (t_dongle *)calloc(1, sizeof(t_dongle));
 	if (!dongle)
 		return (NULL);
 	dongle->cooldown = cooldown;
+	dongle->wait_list = NULL;
 	dongle->name = ft_strdup(dongle_name);
+	dongle->in_use = false;
 	if (!dongle->name)
 	{
 		free(dongle);
@@ -62,6 +65,8 @@ t_coder	*create_coder(t_data *data)
 		return (NULL);
 	coder->data = data;
 	coder->dongle_count = 0;
+	coder->compile_time = data->compile_time;
+	coder->debug_time = data->debug_time;
 	coder->left_dongle = NULL;
 	coder->right_dongle = NULL;
 	return (coder);

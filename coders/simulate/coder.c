@@ -13,7 +13,10 @@
 #include <unistd.h>
 #include "../codexion.h"
 
-static void	execute_action(t_coder *coder, char *action)
+/*
+ * we use usleep for now
+ */
+void	execute_action(t_coder *coder, char *action)
 {
 	pthread_mutex_lock(&coder->data->action_mutex);
 	coder->start_action_time = get_time();
@@ -48,10 +51,10 @@ void	*activate_coder(void *arg)
 	t_coder			*coder;
 
 	coder = (t_coder *)arg;
-	request_dongle(coder);
-	execute_action(coder, TAKE_DONGLE);
+	request_dongle(coder, coder->index);
 	execute_action(coder, COMPILE);
 	execute_action(coder, DEBUG);
 	execute_action(coder, REFACTOR);
+	release_dongle(coder);
 	return (NULL);
 }

@@ -6,7 +6,7 @@
 /*   By: finorako <finorako@student.42antananarivo  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/04/22 10:32:30 by finorako          #+#    #+#             */
-/*   Updated: 2026/04/24 13:48:24 by finorako         ###   ########.fr       */
+/*   Updated: 2026/04/24 17:17:58 by finorako         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,17 +39,19 @@ typedef struct s_coder	t_coder;
 
 typedef struct s_wait_list
 {
-	struct s_queue	*next;
-	t_coder			*coder;
+	struct s_wait_list	*next;
+	t_coder				*coder;
 }				t_wait_list;
 
 typedef struct s_dongle
 {
 	pthread_mutex_t	mutex;
+	pthread_cond_t	cond;
 	t_wait_list		*wait_list;
 	long long		time_used;
 	long long		cooldown;
 	char			*name;
+	bool			in_use;
 }					t_dongle;
 
 typedef struct s_coder
@@ -58,6 +60,11 @@ typedef struct s_coder
 	pthread_cond_t	cond;
 	pthread_t		thread_id;
 	long long		start_action_time;
+	long long		dongle_cooldown;
+	long long		refactor_time;
+	long long		burnout_time;
+	long long		compile_time;
+	long long		debug_time;
 	t_dongle		*right_dongle;
 	t_dongle		*left_dongle;
 	t_data			*data;
@@ -99,15 +106,11 @@ t_dongle			*create_dongle(long long cooldown, char *dongle_name);
 
 bool				arg_checker(char **av, int size);
 
-bool				init_dongles(t_data *data);
-
 void				parser(char **av, t_data *data);
 
 void				print_log(t_coder *coder, char *action);
 
-bool				init_coders(t_data *data);
-
-void				request_dongle(t_coder *coder);
+void				request_dongle(t_coder *coder, int coder_index);
 
 void				take_requested_dongle(t_coder *coder);
 
@@ -122,6 +125,8 @@ void				join_thread(t_data *data);
 void				free_memory(t_data *data);
 
 void				*activate_coder(void *arg);
+
+void				execute_action(t_coder *coder, char *action);
 
 int					ft_strcmp(char *s1, char *s2);
 #endif
