@@ -37,4 +37,6 @@ void	print_log(t_coder *coder, char *action)
 		printf(CODE_LOG, elapsed_time, coder->index, action);
 	else if (!ft_strcmp(TAKE_DONGLE, action))
 		printf(DONGLE_MSG, elapsed_time, coder->index, RIGHT_DONGLE_NAME);
+	else if (!ft_strcmp(RELEASE, action))
+		printf(RELEASE_DONGLE, "right", LEFT_DONGLE_NAME);
 }

@@ -41,7 +41,7 @@ t_dongle	*create_dongle(long long cooldown, char *dongle_name)
 {
 	t_dongle	*dongle;
 
-	dongle = (t_dongle *)calloc(1, sizeof(t_dongle));
+	dongle = (t_dongle *)malloc(sizeof(t_dongle));
 	if (!dongle)
 		return (NULL);
 	dongle->cooldown = cooldown;

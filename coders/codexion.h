@@ -29,6 +29,8 @@
 # define TAKE_DONGLE "dongle"
 # define RIGHT_DONGLE_NAME "dongle"
 # define LEFT_DONGLE_NAME "dongle"
+# define RELEASE "release"
+# define RELEASE_DONGLE "%s %s\n"
 # define BURNED_OUT "burned"
 # define BURNED_OUT_MSG "%lld %d burned out\n"
 # define CODE_LOG "%lld %d is %sing\n"
