@@ -4,17 +4,16 @@ PTHREAD = -pthread
 NAME = codexion
 NORMINETT = norminette
 OBJ = $(SRCS:.c=.o)
-VALGRIND = valgrind -s --track-origins=yes --leak-check=full
+VALGRIND = valgrind --tool=helgrind
 SRCS = main.c \
 	   data_seter/codexion.c \
 	   data_seter/init.c \
 	   data_seter/stack.c \
 	   data_seter/join_thread.c \
-	   data_seter/coder.c \
+	   simulate/coder.c \
 	   utils/arg_checker.c \
 	   utils/free_memory.c \
-	   utils/get_time.c \
-	   utils/logs.c \
+	   utils/bench.c \
 	   simulate/dongle_manager.c \
 	   simulate/scheduling.c
 
@@ -32,7 +31,7 @@ lint:
 	$(NORMINETT) $(SRCS) $(HEADERS)
 
 debug:
-	$(VALGRIND) ./$(NAME) 5 500 300 400 200 3 500 fifo
+	$(VALGRIND) ./$(NAME) 3 500 300 400 200 3 500 fifo
 
 clean:
 	rm -rf $(OBJ)

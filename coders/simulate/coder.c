@@ -6,7 +6,7 @@
 /*   By: finorako <finorako@student.42antananarivo  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/04/22 18:14:44 by finorako          #+#    #+#             */
-/*   Updated: 2026/04/22 19:58:08 by finorako         ###   ########.fr       */
+/*   Updated: 2026/04/24 13:51:01 by finorako         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,7 +15,8 @@
 
 static void	execute_action(t_coder *coder, char *action)
 {
-	pthread_mutex_lock(&coder->data->mutex);
+	pthread_mutex_lock(&coder->data->action_mutex);
+	coder->start_action_time = get_time();
 	if (!ft_strcmp(COMPILE, action))
 		print_log(coder, action);
 	else if (!ft_strcmp(DEBUG, action))
@@ -24,11 +25,11 @@ static void	execute_action(t_coder *coder, char *action)
 		print_log(coder, action);
 	else if (!ft_strcmp(TAKE_DONGLE, action))
 		print_log(coder, action);
-	pthread_mutex_unlock(&coder->data->mutex);
 	usleep(100000);
+	pthread_mutex_unlock(&coder->data->action_mutex);
 }
 
-bool	coders_active(t_data *data)
+/*static bool	coders_active(t_data *data)
 {
 	int				index;
 
@@ -40,13 +41,14 @@ bool	coders_active(t_data *data)
 		index++;
 	}
 	return (true);
-}
+}*/
 
 void	*activate_coder(void *arg)
 {
 	t_coder			*coder;
 
 	coder = (t_coder *)arg;
+	request_dongle(coder);
 	execute_action(coder, TAKE_DONGLE);
 	execute_action(coder, COMPILE);
 	execute_action(coder, DEBUG);

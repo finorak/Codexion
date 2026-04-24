@@ -6,14 +6,14 @@
 /*   By: finorako <finorako@student.42antananarivo  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/04/22 11:26:39 by finorako          #+#    #+#             */
-/*   Updated: 2026/04/22 19:05:21 by finorako         ###   ########.fr       */
+/*   Updated: 2026/04/24 14:22:40 by finorako         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include <stdlib.h>
 #include "../codexion.h"
 
-char	*ft_strdup(char *str)
+static char	*ft_strdup(char *str)
 {
 	char	*value;
 	int		index;
@@ -46,24 +46,11 @@ t_dongle	*create_dongle(long long cooldown, char *dongle_name)
 	dongle->cooldown = cooldown;
 	dongle->name = ft_strdup(dongle_name);
 	if (!dongle->name)
-		return (NULL);
-	dongle->newest = false;
-	dongle->in_use = false;
-	return (dongle);
-}
-
-static bool	free_dongle(t_coder *coder)
-{
-	if (!coder->left_dongle)
 	{
-		if (coder->right_dongle)
-			free(coder->right_dongle);
-		if (coder->right_dongle->name)
-			free(coder->right_dongle->name);
-		free(coder);
-		return (true);
+		free(dongle);
+		return (NULL);
 	}
-	return (false);
+	return (dongle);
 }
 
 t_coder	*create_coder(t_data *data)
@@ -75,16 +62,7 @@ t_coder	*create_coder(t_data *data)
 		return (NULL);
 	coder->data = data;
 	coder->dongle_count = 0;
-	coder->right_dongle = create_dongle(data->dongle_cooldown,
-			RIGHT_DONGLE_NAME);
-	if (!coder->right_dongle)
-	{
-		free(coder);
-		return (NULL);
-	}
-	coder->left_dongle = create_dongle(data->dongle_cooldown,
-			LEFT_DONGLE_NAME);
-	if (free_dongle(coder))
-		return (NULL);
+	coder->left_dongle = NULL;
+	coder->right_dongle = NULL;
 	return (coder);
 }

@@ -6,7 +6,7 @@
 /*   By: finorako <finorako@student.42antananarivo  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/04/22 10:32:30 by finorako          #+#    #+#             */
-/*   Updated: 2026/04/22 19:05:54 by finorako         ###   ########.fr       */
+/*   Updated: 2026/04/24 13:48:24 by finorako         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,6 +17,7 @@
 # include <stdbool.h>
 
 # define FILE_NAME "codexion"
+# define ARG_ERROR "Arument must be valid\n"
 # define ARG_MSG "run with ./%s number_of_coders time_to_burnout time_to_compile time_to_debug\
  time_to_refactor number_of_compiles_required dongle_cooldown scheduler\n"
 # define INIT_ERROR "An error occured during initialisation!\n"
@@ -29,18 +30,26 @@
 # define RIGHT_DONGLE_NAME "dongle"
 # define LEFT_DONGLE_NAME "dongle"
 # define BURNED_OUT "burned"
-# define BURNED_OUT_MSG "[%lld] %d burned out\n"
-# define CODE_LOG "[%lld] %d is %sing\n"
-# define DONGLE_MSG "[%lld] %d has taken %s\n"
+# define BURNED_OUT_MSG "%lld %d burned out\n"
+# define CODE_LOG "%lld %d is %sing\n"
+# define DONGLE_MSG "%lld %d has taken %s\n"
 
 typedef struct s_data	t_data;
+typedef struct s_coder	t_coder;
+
+typedef struct s_wait_list
+{
+	struct s_queue	*next;
+	t_coder			*coder;
+}				t_wait_list;
 
 typedef struct s_dongle
 {
-	long long	cooldown;
-	bool		newest;
-	bool		in_use;
-	char		*name;
+	pthread_mutex_t	mutex;
+	t_wait_list		*wait_list;
+	long long		time_used;
+	long long		cooldown;
+	char			*name;
 }					t_dongle;
 
 typedef struct s_coder
@@ -48,6 +57,7 @@ typedef struct s_coder
 	pthread_mutex_t	mutex;
 	pthread_cond_t	cond;
 	pthread_t		thread_id;
+	long long		start_action_time;
 	t_dongle		*right_dongle;
 	t_dongle		*left_dongle;
 	t_data			*data;
@@ -63,25 +73,33 @@ typedef struct s_coder
  */
 typedef struct s_data
 {
+	pthread_mutex_t	action_mutex;
 	pthread_mutex_t	mutex;
 	pthread_cond_t	cond;
+	long long		dongle_cooldown;
+	long long		refactor_time;
 	long long		burnout_time;
 	long long		compile_time;
 	long long		debug_time;
-	long long		refactor_time;
-	long long		dongle_cooldown;
+	t_dongle		**dongles;
 	t_coder			**coders;
 	char			*scheduler;
-	int				nb_coders;
-	int				nb_dongles;
+	bool			fifo;
+	int				available_dongle;
 	int				compile_required;
+	int				nb_dongles;
+	int				nb_coders;
 }					t_data;
 
 long long			get_time(void);
 
 t_coder				*create_coder(t_data *data);
 
+t_dongle			*create_dongle(long long cooldown, char *dongle_name);
+
 bool				arg_checker(char **av, int size);
+
+bool				init_dongles(t_data *data);
 
 void				parser(char **av, t_data *data);
 

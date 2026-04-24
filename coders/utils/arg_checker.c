@@ -10,8 +10,24 @@
 /*                                                                            */
 /* ************************************************************************** */
 
+#include <stdbool.h>
 #include <stdlib.h>
 #include "../codexion.h"
+
+static long long	time_parser(char *str)
+{
+	long long	value;
+	int			index;
+
+	value = 0;
+	index = 0;
+	while (str[index])
+	{
+		value = (value * 10) + (str[index] - '0');
+		index++;
+	}
+	return (value);
+}
 
 static bool	ft_isdigit(char *str)
 {
@@ -63,25 +79,11 @@ bool	arg_checker(char **av, int size)
 	return (false);
 }
 
-static long long	time_parser(char *str)
-{
-	long long	value;
-	int			index;
-
-	value = 0;
-	index = 0;
-	while (str[index])
-	{
-		value = (value * 10) + (str[index] - '0');
-		index++;
-	}
-	return (value);
-}
-
 void	parser(char **av, t_data *data)
 {
 	data->nb_coders = atoi(av[0]);
-	data->nb_dongles = atoi(av[0]);
+	data->nb_dongles = data->nb_coders;
+	data->available_dongle = data->nb_coders;
 	data->burnout_time = time_parser(av[1]);
 	data->compile_time = time_parser(av[2]);
 	data->debug_time = time_parser(av[3]);
@@ -89,4 +91,8 @@ void	parser(char **av, t_data *data)
 	data->compile_required = atoi(av[5]);
 	data->dongle_cooldown = time_parser(av[6]);
 	data->scheduler = av[7];
+	if (ft_strcmp(data->scheduler, FIFO))
+		data->fifo = true;
+	else
+		data->fifo = false;
 }

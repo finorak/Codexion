@@ -13,23 +13,35 @@
 #include <stdio.h>
 #include "codexion.h"
 
+static bool	codexion(int ac, char **av, t_data *data)
+{
+	if (ac != 9)
+	{
+		fprintf(stderr, ARG_MSG, FILE_NAME);
+		return (false);
+	}
+	if (!arg_checker(av + 1, ac - 1))
+	{
+		fprintf(stderr, ARG_ERROR);
+		return (false);
+	}
+	parser(av + 1, data);
+	if (!init(data))
+	{
+		fprintf(stderr, INIT_ERROR);
+		return (false);
+	}
+	return (true);
+}
+
 int	main(int ac, char **av)
 {
 	t_data	data;
 
-	if (ac != 9)
-	{
-		printf(ARG_MSG, FILE_NAME);
+	data.coders = NULL;
+	data.dongles = NULL;
+	if (!codexion(ac, av, &data))
 		return (1);
-	}
-	if (!arg_checker(av + 1, ac - 1))
-		return (1);
-	parser(av + 1, &data);
-	if (!init(&data))
-	{
-		printf(INIT_ERROR);
-		return (1);
-	}
 	join_thread(&data);
 	free_memory(&data);
 	return (0);

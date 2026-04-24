@@ -19,7 +19,9 @@ void	join_thread(t_data *data)
 	index = 0;
 	while (index < data->nb_coders)
 	{
-		pthread_join(data->coders[index]->thread_id, NULL);
+		pthread_join(
+			data->coders[index]->thread_id,
+			NULL);
 		index++;
 	}
 }
