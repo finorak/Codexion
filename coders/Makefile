@@ -1,45 +1,34 @@
-CC = cc
-FLAGS = -Wall -Wextra -Werror
-PTHREAD = -pthread
 NAME = codexion
-NORMINETT = norminette
-OBJ = $(SRCS:.c=.o)
-VALGRIND = valgrind --tool=helgrind
-SRCS = main.c \
-	   data_seter/codexion.c \
-	   data_seter/init.c \
-	   data_seter/stack.c \
-	   data_seter/join_thread.c \
-	   simulate/coder.c \
-	   utils/arg_checker.c \
-	   utils/free_memory.c \
-	   utils/bench.c \
-	   simulate/dongle_manager.c \
-	   simulate/scheduling.c \
-	   wait_lst_manager/stack.c
 
-HEADERS = codexion.h
+SRC = main.c arg_utils.c debug.c ft_utils.c \
+	  init.c stack.c free_memory.c \
+	  thread.c codexion.c bench.c \
+	  codexion_utils.c dongle_manager.c \
+	  monitoring.c coder_utils.c \
+	  manager.c
 
-all: $(NAME)
+OBJS = $(SRC:.c=.o)
+
+CC = cc
+
+FLAGS = -Wall -Wextra -Werror
+
+PTHREAD = -pthread
 
 %.o: %.c
 	$(CC) $(FLAGS) -c $< -o $@
 
-$(NAME):$(OBJ) $(HEADERS)
-	$(CC) $(FLAGS) $(PTHREAD) $(OBJ) -o $(NAME)
+all: $(NAME)
 
-lint:
-	$(NORMINETT) $(SRCS) $(HEADERS)
-
-debug:
-	$(VALGRIND) ./$(NAME) 3 500 300 400 200 3 500 fifo
+$(NAME): $(OBJS)
+	$(CC) $(FLAGS) $(PTHREAD) $(OBJS) -o $(NAME)
 
 clean:
-	rm -rf $(OBJ)
+	rm -rf $(OBJS)
 
 fclean: clean
 	rm -rf $(NAME)
 
 re: fclean all
 
-.PHONY: fclean re clean all lint debug
+.PHONY: re clean all fclean

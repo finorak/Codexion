@@ -5,44 +5,38 @@
 /*                                                    +:+ +:+         +:+     */
 /*   By: finorako <finorako@student.42antananarivo  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2026/04/22 08:54:59 by finorako          #+#    #+#             */
-/*   Updated: 2026/04/24 17:24:22 by finorako         ###   ########.fr       */
+/*   Created: 2026/04/27 15:24:53 by finorako          #+#    #+#             */
+/*   Updated: 2026/04/28 08:34:19 by finorako         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include <stdio.h>
 #include "codexion.h"
+#include <stdio.h>
 
-static bool	codexion(int ac, char **av, t_data *data)
-{
-	if (ac != 9)
-	{
-		fprintf(stderr, ARG_MSG, FILE_NAME);
-		return (false);
-	}
-	if (!arg_checker(av + 1, ac - 1))
-	{
-		fprintf(stderr, ARG_ERROR);
-		return (false);
-	}
-	parser(av + 1, data);
-	if (!init(data))
-	{
-		fprintf(stderr, INIT_ERROR);
-		return (false);
-	}
-	return (true);
-}
-
+// print_data(&data);
 int	main(int ac, char **av)
 {
 	t_data	data;
 
-	data.coders = NULL;
-	data.dongles = NULL;
-	if (!codexion(ac, av, &data))
+	if (ac != 9)
+	{
+		fprintf(stderr, "Argument error!\n");
 		return (1);
+	}
+	if (!arg_checker(av + 1))
+	{
+		fprintf(stderr, "Argument error!\n");
+		return (1);
+	}
+	if (!parse_data(&data, av + 1))
+	{
+		fprintf(stderr, "Those value must be at least "
+			"60ms each and nb_coder >= 1\n");
+		return (1);
+	}
+	init_data(&data);
+	init_thread(&data);
 	join_thread(&data);
-	free_memory(&data);
+	cleanup(&data);
 	return (0);
 }

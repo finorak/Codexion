@@ -1,27 +1,42 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   join_thread.c                                      :+:      :+:    :+:   */
+/*   ft_utils.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: finorako <finorako@student.42antananarivo  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2026/04/22 12:14:40 by finorako          #+#    #+#             */
-/*   Updated: 2026/04/22 19:07:34 by finorako         ###   ########.fr       */
+/*   Created: 2026/04/27 15:32:21 by finorako          #+#    #+#             */
+/*   Updated: 2026/04/27 16:40:42 by finorako         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../codexion.h"
+#include <stdbool.h>
 
-void	join_thread(t_data *data)
+bool	ft_isdigit(char c)
+{
+	return ('0' <= c && c <= '9');
+}
+
+int	ft_strlen(char *str)
 {
 	int	index;
 
 	index = 0;
-	while (index < data->nb_coders)
+	while (str[index])
+		index++;
+	return (index);
+}
+
+int	ft_strcmp(char *s1, char *s2)
+{
+	int	index;
+
+	index = 0;
+	while (s1[index] || s2[index])
 	{
-		pthread_join(
-			data->coders[index]->thread_id,
-			NULL);
+		if (s1[index] != s2[index])
+			return (s1[index] - s2[index]);
 		index++;
 	}
+	return (0);
 }

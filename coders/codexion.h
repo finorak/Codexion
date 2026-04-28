@@ -5,130 +5,145 @@
 /*                                                    +:+ +:+         +:+     */
 /*   By: finorako <finorako@student.42antananarivo  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2026/04/22 10:32:30 by finorako          #+#    #+#             */
-/*   Updated: 2026/04/24 17:17:58 by finorako         ###   ########.fr       */
+/*   Created: 2026/04/27 15:25:52 by finorako          #+#    #+#             */
+/*   Updated: 2026/04/28 10:49:30 by finorako         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef CODEXION_H
 # define CODEXION_H
 
-# include <pthread.h>
+# include <stdio.h>
+# include <stdlib.h>
 # include <stdbool.h>
+# include <pthread.h>
 
-# define FILE_NAME "codexion"
-# define ARG_ERROR "Arument must be valid\n"
-# define ARG_MSG "run with ./%s number_of_coders time_to_burnout time_to_compile time_to_debug\
- time_to_refactor number_of_compiles_required dongle_cooldown scheduler\n"
-# define INIT_ERROR "An error occured during initialisation!\n"
+// scheduler
 # define FIFO "fifo"
 # define EDF "edf"
-# define COMPILE "compil"
-# define DEBUG "debugg"
-# define REFACTOR "refactor"
-# define TAKE_DONGLE "dongle"
-# define RIGHT_DONGLE_NAME "dongle"
-# define LEFT_DONGLE_NAME "dongle"
-# define RELEASE "release"
-# define RELEASE_DONGLE "%s %s\n"
-# define BURNED_OUT "burned"
-# define BURNED_OUT_MSG "%lld %d burned out\n"
-# define CODE_LOG "%lld %d is %sing\n"
-# define DONGLE_MSG "%lld %d has taken %s\n"
 
+// action to perform
+# define COMPILE "compile"
+# define DEBUG "debug"
+# define REFACTOR "refactor"
+# define TAKE "take"
+# define BURNOUT "burnout"
+
+typedef struct s_queue	t_queue;
 typedef struct s_data	t_data;
 typedef struct s_coder	t_coder;
 
-typedef struct s_wait_list
+// containing all about the time
+typedef struct s_time
 {
-	struct s_wait_list	*next;
-	t_coder				*coder;
-}				t_wait_list;
+	long	start_time;
+	long	burnout;
+	long	compile;
+	long	debug;
+	long	refactor;
+	long	cooldown;
+}				t_time;
 
+// the que struct, we use this to avoid starvation
+typedef struct s_queue
+{
+	struct s_queue	*next;
+	t_coder			*coder;
+	int				id;
+}				t_queue;
+
+// contain the dongle's data
 typedef struct s_dongle
 {
-	pthread_mutex_t	mutex;
+	pthread_mutex_t	lock;
 	pthread_cond_t	cond;
-	t_wait_list		*wait_list;
-	long long		time_used;
-	long long		cooldown;
-	char			*name;
-	bool			in_use;
-}					t_dongle;
+	t_queue			*queue;
+	int				index;
+}				t_dongle;
 
+// contain the coder's data
 typedef struct s_coder
 {
-	pthread_mutex_t	mutex;
-	pthread_cond_t	cond;
-	pthread_t		thread_id;
-	long long		start_action_time;
-	long long		dongle_cooldown;
-	long long		refactor_time;
-	long long		burnout_time;
-	long long		compile_time;
-	long long		debug_time;
-	t_dongle		*right_dongle;
-	t_dongle		*left_dongle;
-	t_data			*data;
-	int				dongle_count;
-	int				compile_count;
-	int				max_compile;
-	int				index;
-}					t_coder;
+	pthread_t	thread_id;
+	t_dongle	*first_dongle;
+	t_dongle	*second_dongle;
+	t_data		*data;
+	long		last_compile_time;
+	int			compile_count;
+	int			index;
+}				t_coder;
 
-/*
- * mutex is used for monitoring
- * coders contain all the coder
- */
+// conain the main data of the program
 typedef struct s_data
 {
-	pthread_mutex_t	action_mutex;
-	pthread_mutex_t	mutex;
+	pthread_mutex_t	print_mutex;
+	pthread_mutex_t	lock;
 	pthread_cond_t	cond;
-	long long		dongle_cooldown;
-	long long		refactor_time;
-	long long		burnout_time;
-	long long		compile_time;
-	long long		debug_time;
+	pthread_t		thread_id;
 	t_dongle		**dongles;
 	t_coder			**coders;
+	t_time			time;
 	char			*scheduler;
-	bool			fifo;
-	int				available_dongle;
-	int				compile_required;
-	int				nb_dongles;
+	bool			burned_out;
+	bool			error_occured;
+	int				coder_done;
 	int				nb_coders;
-}					t_data;
+	int				nb_dongles;
+	int				compile_required;
+	int				thread_activated;
+}				t_data;
 
-long long			get_time(void);
+// ft functions
+bool		ft_isdigit(char c);
+int			ft_strlen(char *str);
+int			ft_strcmp(char *s1, char *s2);
 
-t_coder				*create_coder(t_data *data);
+// argument functions
+bool		arg_checker(char **av);
+bool		parse_data(t_data *data, char **av);
 
-t_dongle			*create_dongle(long long cooldown, char *dongle_name);
+// coder functions for thread
+void		update_thread_active(t_data *data);
+void		*coder_thread(void *arg);
+bool		coder_done_coding(t_coder *coder);
+bool		simulation_done(t_data *data);
+bool		coder_burned_out(t_coder *coder);
+bool		all_coder_done(t_data *data);
+int			thread_activated(t_data *data);
+void		*monitoring_thread(void *arg);
+void		update_coder_state(t_coder *coder);
 
-bool				arg_checker(char **av, int size);
+// dongle manager functions
+void		request_dongle(t_coder *coder);
+void		release_dongle(t_coder *coder);
 
-void				parser(char **av, t_data *data);
+// queue manager functions
+t_queue		*newqueue(t_coder *coder);
+bool		is_first(t_queue *queue, t_coder *coder);
+void		addback(t_queue **queue, t_queue *new_queue);
+bool		insert(t_queue **queue, t_queue *new_queue,
+				pthread_mutex_t *dongle_mutex);
+void		pop_first(t_queue **queue);
 
-void				print_log(t_coder *coder, char *action);
+// init functions
+t_dongle	*newdongle(int index);
+t_coder		*newcoder(t_data *data, int index);
+void		init_data(t_data *data);
+void		init_thread(t_data *data);
+void		join_thread(t_data *data);
 
-void				request_dongle(t_coder *coder, int coder_index);
+// bench functions utilities
+void		print_log(t_coder *coder, char *action);
+long		get_current_time(void);
+void		busy_sleep(long time_to_sleep);
 
-void				take_requested_dongle(t_coder *coder);
+// memory managment
+void		free_coders(t_coder **coder, int size);
+void		free_dongles(t_dongle **dongles, int size);
+void		cleanup(t_data *data);
+// void		release(t_data *data);
 
-void				release_dongle(t_coder *coder);
-
-bool				init(t_data *data);
-
-void				simulate(void *data);
-
-void				join_thread(t_data *data);
-
-void				free_memory(t_data *data);
-
-void				*activate_coder(void *arg);
-
-void				execute_action(t_coder *coder, char *action);
-
-int					ft_strcmp(char *s1, char *s2);
+// debuger
+void		print_data(t_data *data);
+void		print_waitlst(t_queue *queue);
 #endif
