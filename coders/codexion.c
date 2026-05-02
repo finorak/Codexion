@@ -13,24 +13,21 @@
 #include <unistd.h>
 #include "codexion.h"
 
-static void	compile(t_coder *coder)
+static void	coder_routing(t_coder *coder)
 {
-	request_dongle(coder);
-	busy_sleep(coder->data->time.compile);
+	if (!request_dongle(coder))
+		return ;
 	update_coder_state(coder);
 	print_log(coder, COMPILE);
-}
-
-static void	debug(t_coder *coder)
-{
-	busy_sleep(coder->data->time.debug);
+	busy_sleep(coder->data, coder->data->time.compile);
+	release_dongle(coder);
+	update_coder_burning_state(coder, true);
 	print_log(coder, DEBUG);
-}
-
-static void	refactor(t_coder *coder)
-{
-	busy_sleep(coder->data->time.refactor);
+	busy_sleep(coder->data, coder->data->time.debug);
+	if (simulation_done(coder->data))
+		return ;
 	print_log(coder, REFACTOR);
+	busy_sleep(coder->data, coder->data->time.refactor);
 }
 
 void	*coder_thread(void *arg)
@@ -39,16 +36,12 @@ void	*coder_thread(void *arg)
 
 	coder = (t_coder *)arg;
 	update_thread_active(coder->data);
-	if (coder->index % 2 == 0)
-		usleep(200);
-	while (!coder_done_coding(coder))
+	if (coder->data->nb_coders % 2 != 0)
 	{
-		if (simulation_done(coder->data))
-			return (NULL);
-		compile(coder);
-		debug(coder);
-		refactor(coder);
-		release_dongle(coder);
+		if (coder->index % 2 == 0)
+			usleep(200);
 	}
+	while (!coder_done_coding(coder) && !simulation_done(coder->data))
+		coder_routing(coder);
 	return (NULL);
 }

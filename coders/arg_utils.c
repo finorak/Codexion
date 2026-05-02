@@ -11,6 +11,7 @@
 /* ************************************************************************** */
 
 #include <limits.h>
+#include <stdbool.h>
 #include "codexion.h"
 
 static bool	is_numeric(char *str)
@@ -28,14 +29,35 @@ static bool	is_numeric(char *str)
 		index++;
 	if (!str[index])
 		return (false);
-	if (ft_strlen(str + index) > 10)
-		return (false);
 	while (ft_isdigit(str[index]))
 	{
 		value = (value * 10) + (str[index] - '0');
 		index++;
 	}
 	return (value < INT_MAX);
+}
+
+bool	is_valid(char *str)
+{
+	bool	valid;
+	int		index;
+
+	index = 0;
+	valid = false;
+	while (str[index] && ft_isspace(str[index]))
+		index++;
+	if (!str[index] || str[index] == '-')
+		return (valid);
+	if (str[index] == '+')
+		index++;
+	while (str[index] && ft_isdigit(str[index]))
+	{
+		valid = true;
+		index++;
+	}
+	if (valid && str[index])
+		return (false);
+	return (valid);
 }
 
 bool	arg_checker(char **av)
@@ -45,6 +67,8 @@ bool	arg_checker(char **av)
 	index = 0;
 	while (index < 7)
 	{
+		if (!is_valid(av[index]))
+			return (false);
 		if (!is_numeric(av[index]))
 			return (false);
 		index++;
@@ -64,8 +88,8 @@ bool	parse_data(t_data *data, char **av)
 	data->time.cooldown = atoi(av[6]);
 	data->scheduler = av[7];
 	data->burned_out = false;
-	data->time.start_time = get_current_time();
-	return (data->nb_coders >= 1 && data->time.burnout >= 60
-		&& data->time.compile >= 60 && data->time.refactor >= 60
-		&& data->time.debug >= 60);
+	return (data->nb_coders >= MIN_CODERS && data->time.burnout >= MIN_TIME
+		&& data->time.compile >= MIN_TIME && data->time.refactor >= MIN_TIME
+		&& data->time.debug >= MIN_TIME && data->time.cooldown >= MIN_TIME
+		&& data->nb_dongles >= MIN_DONGLES);
 }

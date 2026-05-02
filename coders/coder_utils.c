@@ -20,8 +20,8 @@ bool	coder_done_coding(t_coder *coder)
 
 bool	coder_burned_out(t_coder *coder)
 {
-	return (get_current_time() - coder->last_compile_time
-		> coder->data->time.burnout);
+	return (coder->is_burning && (get_current_time() - coder->last_compile_time
+			> coder->data->time.burnout));
 }
 
 void	update_coder_state(t_coder *coder)
@@ -57,5 +57,6 @@ bool	all_coder_done(t_data *data)
 			return (false);
 		index++;
 	}
+	pthread_mutex_unlock(&data->lock);
 	return (true);
 }

@@ -28,7 +28,6 @@ static void	init_thread_utils(t_data *data)
 	}
 }
 
-// TODO
 //release(data);
 void	init_thread(t_data *data)
 {

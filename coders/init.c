@@ -77,12 +77,14 @@ void	init_data(t_data *data)
 {
 	if (!data)
 		return ;
+	data->time.start_time = get_current_time();
 	data->dongles = dongles(data);
 	if (!data->dongles)
 		return ;
 	data->coders = coders(data);
 	if (!data->coders)
 		return ;
+	data->fifo_scheduler = !ft_strcmp(FIFO, data->scheduler);
 	data->thread_activated = 0;
 	data->coder_done = 0;
 	data->error_occured = false;

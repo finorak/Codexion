@@ -12,11 +12,6 @@
 
 #include "codexion.h"
 
-/*
-	only make the newly added coder take a fork
-	if it's the first in line
-*/
-
 bool	insert(t_queue **queue, t_queue *new_queue, pthread_mutex_t *mutex)
 {
 	pthread_mutex_lock(mutex);
@@ -36,4 +31,23 @@ void	pop_first(t_queue **queue)
 	temp = *queue;
 	*queue = (*queue)->next;
 	free(temp);
+}
+
+/*
+ * we first of all lock the mutex of the dongle,
+ * after that lock the mutex for inserting the new
+ * queu into the dongle's que, after that we verify if the
+ * coder's burnout is less than the other's coders
+ * if yes, we swap them position and only make the
+ * first coder in line to take the dngle
+ */
+void	edf_scheduler(t_coder *coder, t_dongle *dongle)
+{
+	(void)dongle;
+	pthread_mutex_lock(&coder->first_dongle->insert_lock);
+	pthread_mutex_unlock(&coder->first_dongle->insert_lock);
+	// second dongle
+	pthread_mutex_lock(&coder->second_dongle->insert_lock);
+	pthread_mutex_unlock(&coder->second_dongle->insert_lock);
+	release_dongle(coder);
 }

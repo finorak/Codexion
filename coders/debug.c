@@ -45,3 +45,11 @@ void	print_waitlst(t_queue *queue)
 	printf("\n");
 	pthread_mutex_unlock(mutex);
 }
+
+void	print_coder_state(t_coder *coder)
+{
+	pthread_mutex_lock(&coder->data->print_mutex);
+	printf("coder: %d\n", coder->index);
+	printf("\t%d\n", coder->is_burning);
+	pthread_mutex_unlock(&coder->data->print_mutex);
+}

@@ -23,6 +23,7 @@ t_coder	*newcoder(t_data *data, int index)
 	coder->index = index % data->nb_coders + 1;
 	coder->compile_count = 0;
 	coder->last_compile_time = data->time.start_time;
+	coder->is_burning = true;
 	return (coder);
 }
 
@@ -35,6 +36,7 @@ t_dongle	*newdongle(int index)
 		return (NULL);
 	dongle->index = index;
 	dongle->queue = NULL;
+	dongle->last_cooldown_time = 0;
 	return (dongle);
 }
 

@@ -10,12 +10,18 @@
 /*                                                                            */
 /* ************************************************************************** */
 
+#include <pthread.h>
 #include <unistd.h>
 #include "codexion.h"
 
+/*
+ * just verifying if the condition is met, if yes
+ * we terminate all thread overwise we do nothing
+ */
 static bool	is_burnout(t_data *data, int index)
 {
-	if (coder_burned_out(data->coders[index]))
+	if (data->coders[index]->is_burning
+		&& coder_burned_out(data->coders[index]))
 	{
 		data->burned_out = true;
 		print_log(data->coders[index], BURNOUT);
@@ -25,6 +31,9 @@ static bool	is_burnout(t_data *data, int index)
 	return (false);
 }
 
+/*
+ * the unlock mutex happen inside all_coder_done and is_burnout
+ */
 void	*monitoring_thread(void *arg)
 {
 	t_data	*data;
@@ -38,16 +47,13 @@ void	*monitoring_thread(void *arg)
 		while (index < data->nb_coders)
 		{
 			if (all_coder_done(data))
-			{
-				pthread_mutex_unlock(&data->lock);
 				return (NULL);
-			}
 			if (is_burnout(data, index))
 				return (NULL);
 			index++;
 		}
 		pthread_mutex_unlock(&data->lock);
-		busy_sleep(1);
+		usleep(100);
 	}
 	return (NULL);
 }

@@ -11,7 +11,7 @@ OBJS = $(SRC:.c=.o)
 
 CC = cc
 
-FLAGS = -Wall -Wextra -Werror
+FLAGS = -Wall -Wextra -Werror #-fsanitize=thread
 
 PTHREAD = -pthread
 

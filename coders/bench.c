@@ -14,12 +14,12 @@
 #include <sys/time.h>
 #include "codexion.h"
 
-void	busy_sleep(long time_to_sleep)
+void	busy_sleep(t_data *data, long time_to_sleep)
 {
 	long	start;
 
 	start = get_current_time();
-	while (get_current_time() - start < time_to_sleep)
+	while (!simulation_done(data) && get_current_time() - start < time_to_sleep)
 		usleep(100);
 }
 
@@ -54,5 +54,7 @@ void	print_log(t_coder *coder, char *action)
 		printf("%ld %d is refactoring\n", elapsed, coder->index);
 	else if (!ft_strcmp(action, BURNOUT))
 		printf("%ld %d burned out\n", elapsed, coder->index);
+	else if (!ft_strcmp(action, REQUEST))
+		printf("%ld %d has request a dongle\n", elapsed, coder->index);
 	pthread_mutex_unlock(&coder->data->print_mutex);
 }

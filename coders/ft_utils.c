@@ -40,3 +40,8 @@ int	ft_strcmp(char *s1, char *s2)
 	}
 	return (0);
 }
+
+bool	ft_isspace(char c)
+{
+	return ((9 <= c && c <= 13) || c == 32);
+}

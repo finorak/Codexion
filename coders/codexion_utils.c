@@ -11,7 +11,6 @@
 /* ************************************************************************** */
 
 #include "codexion.h"
-#include <pthread.h>
 
 void	update_thread_active(t_data *data)
 {
@@ -20,6 +19,7 @@ void	update_thread_active(t_data *data)
 	pthread_mutex_unlock(&data->lock);
 }
 
+/*
 int	thread_activated(t_data *data)
 {
 	int	active;
@@ -29,7 +29,7 @@ int	thread_activated(t_data *data)
 	active = data->thread_activated;
 	pthread_mutex_unlock(&data->lock);
 	return (active);
-}
+}*/
 
 bool	simulation_done(t_data *data)
 {
@@ -40,4 +40,11 @@ bool	simulation_done(t_data *data)
 	done = data->burned_out;
 	pthread_mutex_unlock(&data->lock);
 	return (done);
+}
+
+void	update_coder_burning_state(t_coder *coder, bool value)
+{
+	pthread_mutex_lock(&coder->data->lock);
+	coder->is_burning = value;
+	pthread_mutex_unlock(&coder->data->lock);
 }
