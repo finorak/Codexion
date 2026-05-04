@@ -6,7 +6,7 @@
 /*   By: finorako <finorako@student.42antananarivo  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/04/27 15:25:52 by finorako          #+#    #+#             */
-/*   Updated: 2026/04/28 10:49:30 by finorako         ###   ########.fr       */
+/*   Updated: 2026/05/04 12:56:43 by finorako         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,11 +18,15 @@
 # include <stdio.h>
 # include <stdlib.h>
 
-// scheduler
+//////////////
+// SCHEDULER //
+// //////////
 # define FIFO "fifo"
 # define EDF "edf"
 
-// action to perform
+///////////////////////
+// ACTION TO PERFORM //
+// //////////////////
 # define COMPILE "compile"
 # define DEBUG "debug"
 # define REFACTOR "refactor"
@@ -30,16 +34,21 @@
 # define BURNOUT "burnout"
 # define REQUEST "request"
 
-// MINIMUM FOR SETTINGS
+/////////////////////////
+// MINIMUM FOR SETTINGS //
+// /////////////////////
 # define MIN_TIME 10
 # define MIN_CODERS 1
 # define MIN_DONGLES 1
+# define MIN_COMPILE_REQUIRED 1
 
 typedef struct s_queue	t_queue;
 typedef struct s_data	t_data;
 typedef struct s_coder	t_coder;
 
-// containing all about the time
+/////////////////////////////////////////////////
+// TIME STRUCTL: Contain information about time //
+// /////////////////////////////////////////////
 typedef struct s_time
 {
 	long				start_time;
@@ -50,7 +59,9 @@ typedef struct s_time
 	long				cooldown;
 }						t_time;
 
-// the que struct, we use this to avoid starvation
+///////////////////////////////////////////////////
+// THE QUEU STRUCT: FOR FIFO AND EDF SCHEDULING //
+// //////////////////////////////////////////////
 typedef struct s_queue
 {
 	struct s_queue		*next;
@@ -134,9 +145,9 @@ bool					dongle_is_available(t_dongle *dongle, t_coder *coder);
 t_queue					*newqueue(t_coder *coder);
 bool					is_first(t_queue *queue, t_coder *coder);
 void					addback(t_queue **queue, t_queue *new_queue);
-bool					insert(t_queue **queue, t_queue *new_queue,
-							pthread_mutex_t *dongle_mutex);
-void					pop_first(t_queue **queue);
+bool					insert(t_dongle *dongle, t_queue **queue,
+							t_queue *new_queue);
+void					pop_first(t_dongle *dongle, t_queue **queue);
 
 // init functions
 t_dongle				*newdongle(int index);

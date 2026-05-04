@@ -6,7 +6,7 @@
 /*   By: finorako <finorako@student.42antananarivo  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/04/27 15:24:53 by finorako          #+#    #+#             */
-/*   Updated: 2026/04/28 08:34:19 by finorako         ###   ########.fr       */
+/*   Updated: 2026/05/04 12:56:37 by finorako         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,8 +50,9 @@ static bool	valid_arg(int ac, char **av, t_data *data)
 	if (!parse_data(data, av + 1))
 	{
 		fprintf(stderr, "Time value must be >= "
-			"%dms each and nb_coders >= %d and nb_dongles >= %d\n",
-			MIN_TIME, MIN_CODERS, MIN_DONGLES);
+			"%dms each and nb_coders >= %d, nb_dongles >= %d "
+			" and compile_required >= %d\n",
+			MIN_TIME, MIN_CODERS, MIN_DONGLES, MIN_COMPILE_REQUIRED);
 		return (false);
 	}
 	return (true);

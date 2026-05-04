@@ -6,7 +6,7 @@
 /*   By: finorako <finorako@student.42antananarivo  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/04/27 19:48:36 by finorako          #+#    #+#             */
-/*   Updated: 2026/04/28 08:22:33 by finorako         ###   ########.fr       */
+/*   Updated: 2026/05/04 12:59:52 by finorako         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,12 +37,10 @@ bool	is_first(t_queue *queue, t_coder *coder)
 	bool	first;
 
 	first = false;
-	pthread_mutex_lock(&coder->data->lock);
 	if (!queue)
 		first = false;
 	else
 		first = queue->coder == coder;
-	pthread_mutex_lock(&coder->data->lock);
 	return (first);
 }
 

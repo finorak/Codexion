@@ -6,7 +6,7 @@
 /*   By: finorako <finorako@student.42antananarivo  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/04/27 15:27:47 by finorako          #+#    #+#             */
-/*   Updated: 2026/04/28 08:33:16 by finorako         ###   ########.fr       */
+/*   Updated: 2026/05/04 12:56:42 by finorako         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -91,5 +91,6 @@ bool	parse_data(t_data *data, char **av)
 	return (data->nb_coders >= MIN_CODERS && data->time.burnout >= MIN_TIME
 		&& data->time.compile >= MIN_TIME && data->time.refactor >= MIN_TIME
 		&& data->time.debug >= MIN_TIME && data->time.cooldown >= MIN_TIME
-		&& data->nb_dongles >= MIN_DONGLES);
+		&& data->nb_dongles >= MIN_DONGLES
+		&& data->compile_required >= MIN_COMPILE_REQUIRED);
 }

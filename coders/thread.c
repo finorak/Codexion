@@ -6,7 +6,7 @@
 /*   By: finorako <finorako@student.42antananarivo  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/04/27 16:46:08 by finorako          #+#    #+#             */
-/*   Updated: 2026/04/28 09:24:22 by finorako         ###   ########.fr       */
+/*   Updated: 2026/05/04 12:56:30 by finorako         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,6 +22,7 @@ static void	init_thread_utils(t_data *data)
 	index = 0;
 	while (index < data->nb_dongles)
 	{
+		pthread_mutex_init(&data->dongles[index]->insert_lock, NULL);
 		pthread_mutex_init(&data->dongles[index]->lock, NULL);
 		pthread_cond_init(&data->dongles[index]->cond, NULL);
 		index++;
