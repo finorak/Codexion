@@ -131,7 +131,7 @@ bool					coder_done_coding(t_coder *coder);
 bool					simulation_done(t_data *data);
 bool					coder_burned_out(t_coder *coder);
 bool					all_coder_done(t_data *data);
-int						thread_activated(t_data *data);
+// int						thread_activated(t_data *data);
 void					*monitoring_thread(void *arg);
 void					update_coder_state(t_coder *coder);
 void					update_coder_burning_state(t_coder *coder, bool value);

@@ -13,6 +13,8 @@
 #include <unistd.h>
 #include "codexion.h"
 
+// print the log, do a busy sleep for the time
+// of the action, and update the coder state
 static void	coder_routing(t_coder *coder)
 {
 	if (!request_dongle(coder))
@@ -24,8 +26,6 @@ static void	coder_routing(t_coder *coder)
 	update_coder_burning_state(coder, true);
 	print_log(coder, DEBUG);
 	busy_sleep(coder->data, coder->data->time.debug);
-	if (simulation_done(coder->data))
-		return ;
 	print_log(coder, REFACTOR);
 	busy_sleep(coder->data, coder->data->time.refactor);
 }
