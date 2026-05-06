@@ -6,7 +6,7 @@
 /*   By: finorako <finorako@student.42antananarivo  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/04/27 15:25:52 by finorako          #+#    #+#             */
-/*   Updated: 2026/05/04 12:56:43 by finorako         ###   ########.fr       */
+/*   Updated: 2026/05/05 16:32:43 by finorako         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,6 +34,11 @@
 # define BURNOUT "burnout"
 # define REQUEST "request"
 
+///////////////////
+// DEBUG MACROS //
+/////////////////
+# define POSIION_STATE "poistion"
+
 /////////////////////////
 // MINIMUM FOR SETTINGS //
 // /////////////////////
@@ -58,6 +63,15 @@ typedef struct s_time
 	long				refactor;
 	long				cooldown;
 }						t_time;
+
+typedef struct s_counter
+{
+	int					coder_done;
+	int					nb_coders;
+	int					nb_dongles;
+	int					compile_required;
+	int					thread_activated;
+}						t_counter;
 
 ///////////////////////////////////////////////////
 // THE QUEU STRUCT: FOR FIFO AND EDF SCHEDULING //
@@ -100,6 +114,7 @@ typedef struct s_data
 	pthread_mutex_t		lock;
 	pthread_cond_t		cond;
 	pthread_t			thread_id;
+	t_counter			counter;
 	t_dongle			**dongles;
 	t_coder				**coders;
 	t_time				time;
@@ -107,11 +122,6 @@ typedef struct s_data
 	bool				fifo_scheduler;
 	bool				error_occured;
 	bool				burned_out;
-	int					coder_done;
-	int					nb_coders;
-	int					nb_dongles;
-	int					compile_required;
-	int					thread_activated;
 }						t_data;
 
 // ft functions

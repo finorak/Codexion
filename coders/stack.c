@@ -6,7 +6,7 @@
 /*   By: finorako <finorako@student.42antananarivo  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/04/27 16:17:25 by finorako          #+#    #+#             */
-/*   Updated: 2026/04/28 06:31:59 by finorako         ###   ########.fr       */
+/*   Updated: 2026/05/05 16:32:08 by finorako         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,7 +20,7 @@ t_coder	*newcoder(t_data *data, int index)
 	if (!coder)
 		return (NULL);
 	coder->data = data;
-	coder->index = index % data->nb_coders + 1;
+	coder->index = index % data->counter.nb_coders + 1;
 	coder->compile_count = 0;
 	coder->last_compile_time = data->time.start_time;
 	coder->is_burning = true;
@@ -49,7 +49,7 @@ t_queue	*newqueue(t_coder *coder)
 		return (NULL);
 	queue->coder = coder;
 	queue->next = NULL;
-	queue->id = coder->index & coder->data->nb_coders;
+	queue->id = coder->index & coder->data->counter.nb_coders;
 	return (queue);
 }
 

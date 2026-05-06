@@ -6,7 +6,7 @@
 /*   By: finorako <finorako@student.42antananarivo  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/04/27 16:27:56 by finorako          #+#    #+#             */
-/*   Updated: 2026/04/28 09:00:23 by finorako         ###   ########.fr       */
+/*   Updated: 2026/05/05 16:32:00 by finorako         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,7 +33,7 @@ void	release(t_data *data)
 	if (!data)
 		return ;
 	index = 0;
-	while (index < data->nb_dongles)
+	while (index < data->counter.nb_dongles)
 	{
 		pthread_mutex_destroy(&data->dongles[index]->insert_lock);
 		pthread_mutex_destroy(&data->dongles[index]->lock);
@@ -81,6 +81,6 @@ void	cleanup(t_data *data)
 	if (!data)
 		return ;
 	release(data);
-	free_dongles(data->dongles, data->nb_dongles);
-	free_coders(data->coders, data->nb_coders);
+	free_dongles(data->dongles, data->counter.nb_dongles);
+	free_coders(data->coders, data->counter.nb_coders);
 }

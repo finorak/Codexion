@@ -6,11 +6,10 @@
 /*   By: finorako <finorako@student.42antananarivo  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/04/27 19:28:50 by finorako          #+#    #+#             */
-/*   Updated: 2026/04/28 10:07:05 by finorako         ###   ########.fr       */
+/*   Updated: 2026/05/05 16:31:48 by finorako         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include <pthread.h>
 #include <unistd.h>
 #include "codexion.h"
 
@@ -44,7 +43,7 @@ void	*monitoring_thread(void *arg)
 	{
 		index = 0;
 		pthread_mutex_lock(&data->lock);
-		while (index < data->nb_coders)
+		while (index < data->counter.nb_coders)
 		{
 			if (all_coder_done(data))
 				return (NULL);

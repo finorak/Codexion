@@ -6,7 +6,7 @@
 /*   By: finorako <finorako@student.42antananarivo  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/04/27 16:56:47 by finorako          #+#    #+#             */
-/*   Updated: 2026/04/28 10:35:10 by finorako         ###   ########.fr       */
+/*   Updated: 2026/05/05 16:32:47 by finorako         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,11 +36,8 @@ void	*coder_thread(void *arg)
 
 	coder = (t_coder *)arg;
 	update_thread_active(coder->data);
-	if (coder->data->nb_coders % 2 != 0)
-	{
-		if (coder->index % 2 == 0)
-			usleep(200);
-	}
+	if (coder->index % 2 != 0)
+		usleep(200);
 	while (!coder_done_coding(coder) && !simulation_done(coder->data))
 		coder_routing(coder);
 	return (NULL);
