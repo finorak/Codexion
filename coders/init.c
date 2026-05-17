@@ -6,7 +6,7 @@
 /*   By: finorako <finorako@student.42antananarivo  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/04/27 16:13:08 by finorako          #+#    #+#             */
-/*   Updated: 2026/05/05 16:33:37 by finorako         ###   ########.fr       */
+/*   Updated: 2026/04/28 06:16:59 by finorako         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,7 +18,7 @@ static void	assigne_dongle(t_coder *coder)
 	int	second;
 
 	first = coder->index;
-	second = first % coder->data->counter.nb_coders;
+	second = first % coder->data->nb_coders;
 	coder->first_dongle = coder->data->dongles[first - 1];
 	coder->second_dongle = coder->data->dongles[second];
 	if (first % 2 == 0)
@@ -33,11 +33,11 @@ static t_coder	**coders(t_data *data)
 	t_coder	**coderlst;
 	int		index;
 
-	coderlst = (t_coder **)malloc(sizeof(t_coder *) * data->counter.nb_coders);
+	coderlst = (t_coder **)malloc(sizeof(t_coder *) * data->nb_coders);
 	if (!coderlst)
 		return (NULL);
 	index = 0;
-	while (index < data->counter.nb_coders)
+	while (index < data->nb_coders)
 	{
 		coderlst[index] = newcoder(data, index);
 		if (!coderlst[index])
@@ -56,12 +56,11 @@ static t_dongle	**dongles(t_data *data)
 	t_dongle	**donglelst;
 	int			index;
 
-	donglelst = (t_dongle **)malloc(sizeof(t_dongle *)
-			* data->counter.nb_dongles);
+	donglelst = (t_dongle **)malloc(sizeof(t_dongle *) * data->nb_dongles);
 	if (!donglelst)
 		return (NULL);
 	index = 0;
-	while (index < data->counter.nb_dongles)
+	while (index < data->nb_dongles)
 	{
 		donglelst[index] = newdongle(index);
 		if (!donglelst[index])
@@ -86,7 +85,7 @@ void	init_data(t_data *data)
 	if (!data->coders)
 		return ;
 	data->fifo_scheduler = !ft_strcmp(FIFO, data->scheduler);
-	data->counter.thread_activated = 0;
-	data->counter.coder_done = 0;
+	data->thread_activated = 0;
+	data->coder_done = 0;
 	data->error_occured = false;
 }

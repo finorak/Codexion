@@ -6,15 +6,13 @@
 /*   By: finorako <finorako@student.42antananarivo  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/04/27 16:56:47 by finorako          #+#    #+#             */
-/*   Updated: 2026/05/05 16:32:47 by finorako         ###   ########.fr       */
+/*   Updated: 2026/04/28 10:35:10 by finorako         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include <unistd.h>
 #include "codexion.h"
 
-// print the log, do a busy sleep for the time
-// of the action, and update the coder state
 static void	coder_routing(t_coder *coder)
 {
 	if (!request_dongle(coder))
@@ -26,6 +24,8 @@ static void	coder_routing(t_coder *coder)
 	update_coder_burning_state(coder, true);
 	print_log(coder, DEBUG);
 	busy_sleep(coder->data, coder->data->time.debug);
+	if (simulation_done(coder->data))
+		return ;
 	print_log(coder, REFACTOR);
 	busy_sleep(coder->data, coder->data->time.refactor);
 }
@@ -36,8 +36,11 @@ void	*coder_thread(void *arg)
 
 	coder = (t_coder *)arg;
 	update_thread_active(coder->data);
-	if (coder->index % 2 != 0)
-		usleep(200);
+	if (coder->data->nb_coders % 2 != 0)
+	{
+		if (coder->index % 2 == 0)
+			usleep(200);
+	}
 	while (!coder_done_coding(coder) && !simulation_done(coder->data))
 		coder_routing(coder);
 	return (NULL);

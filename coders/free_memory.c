@@ -6,25 +6,11 @@
 /*   By: finorako <finorako@student.42antananarivo  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/04/27 16:27:56 by finorako          #+#    #+#             */
-/*   Updated: 2026/05/05 16:32:00 by finorako         ###   ########.fr       */
+/*   Updated: 2026/04/28 09:00:23 by finorako         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "codexion.h"
-
-static void	free_queue(t_queue	**queue)
-{
-	t_queue	*temp;
-
-	if (!queue)
-		return ;
-	while (*queue)
-	{
-		temp = (*queue)->next;
-		free(*queue);
-		*queue = temp;
-	}
-}
 
 void	release(t_data *data)
 {
@@ -33,9 +19,8 @@ void	release(t_data *data)
 	if (!data)
 		return ;
 	index = 0;
-	while (index < data->counter.nb_dongles)
+	while (index < data->nb_coders)
 	{
-		pthread_mutex_destroy(&data->dongles[index]->insert_lock);
 		pthread_mutex_destroy(&data->dongles[index]->lock);
 		pthread_cond_destroy(&data->dongles[index]->cond);
 		index++;
@@ -43,6 +28,20 @@ void	release(t_data *data)
 	pthread_mutex_destroy(&data->print_mutex);
 	pthread_mutex_destroy(&data->lock);
 	pthread_cond_destroy(&data->cond);
+}
+
+void	free_queue(t_queue	*queue)
+{
+	t_queue	*temp;
+
+	if (!queue)
+		return ;
+	while (queue)
+	{
+		temp = queue->next;
+		free(queue);
+		queue = temp;
+	}
 }
 
 void	free_dongles(t_dongle **dongles, int size)
@@ -54,7 +53,6 @@ void	free_dongles(t_dongle **dongles, int size)
 	index = 0;
 	while (index < size)
 	{
-		free_queue(&dongles[index]->queue);
 		free(dongles[index]);
 		index++;
 	}
@@ -81,6 +79,6 @@ void	cleanup(t_data *data)
 	if (!data)
 		return ;
 	release(data);
-	free_dongles(data->dongles, data->counter.nb_dongles);
-	free_coders(data->coders, data->counter.nb_coders);
+	free_dongles(data->dongles, data->nb_dongles);
+	free_coders(data->coders, data->nb_coders);
 }

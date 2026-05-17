@@ -6,7 +6,7 @@
 /*   By: finorako <finorako@student.42antananarivo  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/04/27 17:47:25 by finorako          #+#    #+#             */
-/*   Updated: 2026/05/05 16:32:38 by finorako         ###   ########.fr       */
+/*   Updated: 2026/04/27 17:50:23 by finorako         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,7 +15,7 @@
 void	update_thread_active(t_data *data)
 {
 	pthread_mutex_lock(&data->lock);
-	data->counter.thread_activated += 1;
+	data->thread_activated += 1;
 	pthread_mutex_unlock(&data->lock);
 }
 

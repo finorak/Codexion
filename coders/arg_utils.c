@@ -6,13 +6,13 @@
 /*   By: finorako <finorako@student.42antananarivo  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/04/27 15:27:47 by finorako          #+#    #+#             */
-/*   Updated: 2026/05/05 16:32:58 by finorako         ###   ########.fr       */
+/*   Updated: 2026/04/28 08:33:16 by finorako         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "codexion.h"
 #include <limits.h>
 #include <stdbool.h>
+#include "codexion.h"
 
 static bool	is_numeric(char *str)
 {
@@ -78,20 +78,18 @@ bool	arg_checker(char **av)
 
 bool	parse_data(t_data *data, char **av)
 {
-	data->counter.nb_coders = atoi(av[0]);
-	data->counter.nb_dongles = atoi(av[0]);
+	data->nb_coders = atoi(av[0]);
+	data->nb_dongles = atoi(av[0]);
 	data->time.burnout = atoi(av[1]);
 	data->time.compile = atoi(av[2]);
 	data->time.debug = atoi(av[3]);
 	data->time.refactor = atoi(av[4]);
-	data->counter.compile_required = atoi(av[5]);
+	data->compile_required = atoi(av[5]);
 	data->time.cooldown = atoi(av[6]);
 	data->scheduler = av[7];
 	data->burned_out = false;
-	return (data->counter.nb_coders >= MIN_CODERS
-		&& data->time.burnout >= MIN_TIME && data->time.compile >= MIN_TIME
-		&& data->time.refactor >= MIN_TIME && data->time.debug >= MIN_TIME
-		&& data->time.cooldown >= MIN_TIME
-		&& data->counter.nb_dongles >= MIN_DONGLES
-		&& data->counter.compile_required >= MIN_COMPILE_REQUIRED);
+	return (data->nb_coders >= MIN_CODERS && data->time.burnout >= MIN_TIME
+		&& data->time.compile >= MIN_TIME && data->time.refactor >= MIN_TIME
+		&& data->time.debug >= MIN_TIME && data->time.cooldown >= MIN_TIME
+		&& data->nb_dongles >= MIN_DONGLES);
 }

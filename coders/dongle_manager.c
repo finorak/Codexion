@@ -6,10 +6,11 @@
 /*   By: finorako <finorako@student.42antananarivo  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/04/27 18:25:04 by finorako          #+#    #+#             */
-/*   Updated: 2026/05/05 16:31:40 by finorako         ###   ########.fr       */
+/*   Updated: 2026/04/28 10:52:37 by finorako         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
+#include <stdbool.h>
 #include <unistd.h>
 #include "codexion.h"
 

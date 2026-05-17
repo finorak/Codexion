@@ -6,7 +6,7 @@
 /*   By: finorako <finorako@student.42antananarivo  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/04/27 15:25:52 by finorako          #+#    #+#             */
-/*   Updated: 2026/05/05 16:32:43 by finorako         ###   ########.fr       */
+/*   Updated: 2026/04/28 10:49:30 by finorako         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,15 +18,11 @@
 # include <stdio.h>
 # include <stdlib.h>
 
-//////////////
-// SCHEDULER //
-// //////////
+// scheduler
 # define FIFO "fifo"
 # define EDF "edf"
 
-///////////////////////
-// ACTION TO PERFORM //
-// //////////////////
+// action to perform
 # define COMPILE "compile"
 # define DEBUG "debug"
 # define REFACTOR "refactor"
@@ -34,26 +30,16 @@
 # define BURNOUT "burnout"
 # define REQUEST "request"
 
-///////////////////
-// DEBUG MACROS //
-/////////////////
-# define POSIION_STATE "poistion"
-
-/////////////////////////
-// MINIMUM FOR SETTINGS //
-// /////////////////////
+// MINIMUM FOR SETTINGS
 # define MIN_TIME 10
 # define MIN_CODERS 1
 # define MIN_DONGLES 1
-# define MIN_COMPILE_REQUIRED 1
 
 typedef struct s_queue	t_queue;
 typedef struct s_data	t_data;
 typedef struct s_coder	t_coder;
 
-/////////////////////////////////////////////////
-// TIME STRUCTL: Contain information about time //
-// /////////////////////////////////////////////
+// containing all about the time
 typedef struct s_time
 {
 	long				start_time;
@@ -64,18 +50,7 @@ typedef struct s_time
 	long				cooldown;
 }						t_time;
 
-typedef struct s_counter
-{
-	int					coder_done;
-	int					nb_coders;
-	int					nb_dongles;
-	int					compile_required;
-	int					thread_activated;
-}						t_counter;
-
-///////////////////////////////////////////////////
-// THE QUEU STRUCT: FOR FIFO AND EDF SCHEDULING //
-// //////////////////////////////////////////////
+// the que struct, we use this to avoid starvation
 typedef struct s_queue
 {
 	struct s_queue		*next;
@@ -114,7 +89,6 @@ typedef struct s_data
 	pthread_mutex_t		lock;
 	pthread_cond_t		cond;
 	pthread_t			thread_id;
-	t_counter			counter;
 	t_dongle			**dongles;
 	t_coder				**coders;
 	t_time				time;
@@ -122,6 +96,11 @@ typedef struct s_data
 	bool				fifo_scheduler;
 	bool				error_occured;
 	bool				burned_out;
+	int					coder_done;
+	int					nb_coders;
+	int					nb_dongles;
+	int					compile_required;
+	int					thread_activated;
 }						t_data;
 
 // ft functions
@@ -141,7 +120,7 @@ bool					coder_done_coding(t_coder *coder);
 bool					simulation_done(t_data *data);
 bool					coder_burned_out(t_coder *coder);
 bool					all_coder_done(t_data *data);
-// int						thread_activated(t_data *data);
+int						thread_activated(t_data *data);
 void					*monitoring_thread(void *arg);
 void					update_coder_state(t_coder *coder);
 void					update_coder_burning_state(t_coder *coder, bool value);
@@ -155,9 +134,9 @@ bool					dongle_is_available(t_dongle *dongle, t_coder *coder);
 t_queue					*newqueue(t_coder *coder);
 bool					is_first(t_queue *queue, t_coder *coder);
 void					addback(t_queue **queue, t_queue *new_queue);
-bool					insert(t_dongle *dongle, t_queue **queue,
-							t_queue *new_queue);
-void					pop_first(t_dongle *dongle, t_queue **queue);
+bool					insert(t_queue **queue, t_queue *new_queue,
+							t_dongle *dongle);
+void					pop_first(t_queue **queue);
 
 // init functions
 t_dongle				*newdongle(int index);

@@ -6,7 +6,7 @@
 /*   By: finorako <finorako@student.42antananarivo  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/04/27 17:06:47 by finorako          #+#    #+#             */
-/*   Updated: 2026/05/05 16:31:52 by finorako         ###   ########.fr       */
+/*   Updated: 2026/04/27 17:20:48 by finorako         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,8 +38,11 @@ void	print_log(t_coder *coder, char *action)
 	long	elapsed;
 
 	elapsed = get_current_time() - coder->data->time.start_time;
-	if (ft_strcmp(action, BURNOUT) != 0 && simulation_done(coder->data))
-		return ;
+	if (ft_strcmp(action, BURNOUT))
+	{
+		if (simulation_done(coder->data))
+			return ;
+	}
 	pthread_mutex_lock(&coder->data->print_mutex);
 	if (!ft_strcmp(action, TAKE))
 		printf("%ld %d has taken a dongle\n", elapsed, coder->index);
@@ -51,8 +54,6 @@ void	print_log(t_coder *coder, char *action)
 		printf("%ld %d is refactoring\n", elapsed, coder->index);
 	else if (!ft_strcmp(action, BURNOUT))
 		printf("%ld %d burned out\n", elapsed, coder->index);
-	else if (!ft_strcmp(action, POSIION_STATE))
-		printf("is_first: %d\n", is_first(coder->first_dongle->queue, coder));
 	else if (!ft_strcmp(action, REQUEST))
 		printf("%ld %d has request a dongle\n", elapsed, coder->index);
 	pthread_mutex_unlock(&coder->data->print_mutex);
