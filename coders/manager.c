@@ -22,15 +22,17 @@ bool	insert(t_queue **queue, t_queue *new_queue, t_dongle *dongle)
 	return (true);
 }
 
-void	pop_first(t_queue **queue)
+void	pop_first(t_queue **queue, t_dongle *dongle)
 {
 	t_queue	*temp;
 
+	pthread_mutex_lock(&dongle->insert_lock);
 	if (!queue || !*queue)
 		return ;
 	temp = *queue;
 	*queue = (*queue)->next;
 	free(temp);
+	pthread_mutex_unlock(&dongle->insert_lock);
 }
 
 /*
@@ -46,7 +48,6 @@ void	edf_scheduler(t_coder *coder, t_dongle *dongle)
 	(void)dongle;
 	pthread_mutex_lock(&coder->first_dongle->insert_lock);
 	pthread_mutex_unlock(&coder->first_dongle->insert_lock);
-	// second dongle
 	pthread_mutex_lock(&coder->second_dongle->insert_lock);
 	pthread_mutex_unlock(&coder->second_dongle->insert_lock);
 	release_dongle(coder);

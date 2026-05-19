@@ -37,19 +37,14 @@ static bool	wait_dongle_availability(t_data *data, t_dongle *dongle,
 	return (false);
 }
 
-/*
- * we just hold onto the dongle till the cooldown is reached
- * because if the concurency might be not ok if we don't hold
- * into the dongle first, some other coder might take it
- */
-bool	request_dongle(t_coder *coder)
+static bool	can_code(t_coder *coder)
 {
-	if (simulation_done(coder->data))
-		return (false);
 	pthread_mutex_lock(&coder->first_dongle->lock);
 	if (!wait_dongle_availability(coder->data, coder->first_dongle,
 			coder->data->time.cooldown))
 	{
+		pop_first(&coder->first_dongle->queue, coder->first_dongle);
+		pop_first(&coder->second_dongle->queue, coder->second_dongle);
 		pthread_mutex_unlock(&coder->first_dongle->lock);
 		return (false);
 	}
@@ -58,10 +53,46 @@ bool	request_dongle(t_coder *coder)
 	if (!wait_dongle_availability(coder->data, coder->second_dongle,
 			coder->data->time.cooldown))
 	{
-		release_dongle(coder);
+		pop_first(&coder->first_dongle->queue, coder->first_dongle);
+		pop_first(&coder->second_dongle->queue, coder->second_dongle);
+		pthread_mutex_unlock(&coder->first_dongle->lock);
+		pthread_mutex_unlock(&coder->second_dongle->lock);
 		return (false);
 	}
 	print_log(coder, TAKE);
+	return (true);
+}
+
+/*
+ * we just hold onto the dongle till the cooldown is reached
+ * because if the concurency might be not ok if we don't hold
+ * into the dongle first, some other coder might take it
+ * 
+ * A coder can only take the dongles if they are first in the
+ * waiting queue of BOTH dongles. This ensures fair scheduling.
+ */
+bool	request_dongle(t_coder *coder)
+{
+	t_queue	*first_queue;
+	t_queue	*second_queue;
+
+	if (simulation_done(coder->data))
+		return (false);
+	first_queue = newqueue(coder);
+	second_queue = newqueue(coder);
+	if (!first_queue || !second_queue)
+		return (false);
+	insert(&coder->first_dongle->queue, first_queue, coder->first_dongle);
+	insert(&coder->second_dongle->queue, second_queue, coder->second_dongle);
+	if (!is_first(coder->first_dongle->queue, coder, coder->first_dongle)
+		|| !is_first(coder->second_dongle->queue, coder, coder->second_dongle))
+	{
+		pop_first(&coder->first_dongle->queue, coder->first_dongle);
+		pop_first(&coder->second_dongle->queue, coder->second_dongle);
+		return (false);
+	}
+	if (!can_code(coder))
+		return (false);
 	update_coder_burning_state(coder, false);
 	return (true);
 }
@@ -75,6 +106,8 @@ void	release_dongle(t_coder *coder)
 {
 	coder->first_dongle->last_cooldown_time = get_current_time();
 	coder->second_dongle->last_cooldown_time = get_current_time();
+	pop_first(&coder->second_dongle->queue, coder->second_dongle);
+	pop_first(&coder->first_dongle->queue, coder->first_dongle);
 	pthread_mutex_unlock(&coder->second_dongle->lock);
 	pthread_mutex_unlock(&coder->first_dongle->lock);
 }

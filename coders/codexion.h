@@ -132,11 +132,12 @@ bool					dongle_is_available(t_dongle *dongle, t_coder *coder);
 
 // queue manager functions
 t_queue					*newqueue(t_coder *coder);
-bool					is_first(t_queue *queue, t_coder *coder);
+bool					is_first(t_queue *queue, t_coder *coder,
+							t_dongle *dongle);
 void					addback(t_queue **queue, t_queue *new_queue);
 bool					insert(t_queue **queue, t_queue *new_queue,
 							t_dongle *dongle);
-void					pop_first(t_queue **queue);
+void					pop_first(t_queue **queue, t_dongle *dongle);
 
 // init functions
 t_dongle				*newdongle(int index);
