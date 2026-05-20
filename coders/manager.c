@@ -16,7 +16,10 @@ bool	insert(t_queue **queue, t_queue *new_queue, t_dongle *dongle)
 {
 	pthread_mutex_lock(&dongle->insert_lock);
 	if (!queue)
+	{
+		pthread_mutex_unlock(&dongle->insert_lock);
 		return (false);
+	}
 	addback(queue, new_queue);
 	pthread_mutex_unlock(&dongle->insert_lock);
 	return (true);
@@ -28,7 +31,10 @@ void	pop_first(t_queue **queue, t_dongle *dongle)
 
 	pthread_mutex_lock(&dongle->insert_lock);
 	if (!queue || !*queue)
+	{
+		pthread_mutex_unlock(&dongle->insert_lock);
 		return ;
+	}
 	temp = *queue;
 	*queue = (*queue)->next;
 	free(temp);
