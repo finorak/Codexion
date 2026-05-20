@@ -6,7 +6,7 @@
 /*   By: finorako <finorako@student.42antananarivo  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/04/27 15:25:52 by finorako          #+#    #+#             */
-/*   Updated: 2026/04/28 10:49:30 by finorako         ###   ########.fr       */
+/*   Updated: 2026/05/20 10:51:47 by finorako         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -124,6 +124,11 @@ int						thread_activated(t_data *data);
 void					*monitoring_thread(void *arg);
 void					update_coder_state(t_coder *coder);
 void					update_coder_burning_state(t_coder *coder, bool value);
+
+// scheduler functions
+
+bool					scheduler(t_coder *coder,
+							t_queue *first_queue, t_queue *second_queue);
 
 // dongle manager functions
 bool					request_dongle(t_coder *coder);

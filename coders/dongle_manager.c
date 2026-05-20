@@ -6,7 +6,7 @@
 /*   By: finorako <finorako@student.42antananarivo  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/04/27 18:25:04 by finorako          #+#    #+#             */
-/*   Updated: 2026/04/28 10:52:37 by finorako         ###   ########.fr       */
+/*   Updated: 2026/05/20 10:52:12 by finorako         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -80,17 +80,8 @@ bool	request_dongle(t_coder *coder)
 		return (false);
 	first_queue = newqueue(coder);
 	second_queue = newqueue(coder);
-	if (!first_queue || !second_queue)
+	if (!scheduler(coder, first_queue, second_queue))
 		return (false);
-	insert(&coder->first_dongle->queue, first_queue, coder->first_dongle);
-	insert(&coder->second_dongle->queue, second_queue, coder->second_dongle);
-	if (!is_first(coder->first_dongle->queue, coder, coder->first_dongle)
-		|| !is_first(coder->second_dongle->queue, coder, coder->second_dongle))
-	{
-		pop_first(&coder->first_dongle->queue, coder->first_dongle);
-		pop_first(&coder->second_dongle->queue, coder->second_dongle);
-		return (false);
-	}
 	if (!can_code(coder))
 		return (false);
 	update_coder_burning_state(coder, false);

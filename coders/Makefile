@@ -5,13 +5,13 @@ SRC = main.c arg_utils.c debug.c ft_utils.c \
 	  thread.c codexion.c bench.c \
 	  codexion_utils.c dongle_manager.c \
 	  monitoring.c coder_utils.c \
-	  manager.c
+	  manager.c scheduler.c
 
 OBJS = $(SRC:.c=.o)
 
 CC = cc
 
-FLAGS = -Wall -Wextra -Werror #-fsanitize=thread
+FLAGS = -Wall -Wextra -Werror
 
 PTHREAD = -pthread
 
