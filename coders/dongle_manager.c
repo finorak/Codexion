@@ -6,11 +6,10 @@
 /*   By: finorako <finorako@student.42antananarivo  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/04/27 18:25:04 by finorako          #+#    #+#             */
-/*   Updated: 2026/05/20 10:52:12 by finorako         ###   ########.fr       */
+/*   Updated: 2026/05/20 11:53:04 by finorako         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include <stdbool.h>
 #include <unistd.h>
 #include "codexion.h"
 
@@ -45,6 +44,7 @@ static bool	can_code(t_coder *coder)
 	{
 		pop_first(&coder->first_dongle->queue, coder->first_dongle);
 		pop_first(&coder->second_dongle->queue, coder->second_dongle);
+		pthread_cond_broadcast(&coder->first_dongle->cond);
 		pthread_mutex_unlock(&coder->first_dongle->lock);
 		return (false);
 	}
@@ -53,10 +53,7 @@ static bool	can_code(t_coder *coder)
 	if (!wait_dongle_availability(coder->data, coder->second_dongle,
 			coder->data->time.cooldown))
 	{
-		pop_first(&coder->first_dongle->queue, coder->first_dongle);
-		pop_first(&coder->second_dongle->queue, coder->second_dongle);
-		pthread_mutex_unlock(&coder->first_dongle->lock);
-		pthread_mutex_unlock(&coder->second_dongle->lock);
+		request_dongle(coder);
 		return (false);
 	}
 	print_log(coder, TAKE);
@@ -99,6 +96,8 @@ void	release_dongle(t_coder *coder)
 	coder->second_dongle->last_cooldown_time = get_current_time();
 	pop_first(&coder->second_dongle->queue, coder->second_dongle);
 	pop_first(&coder->first_dongle->queue, coder->first_dongle);
-	pthread_mutex_unlock(&coder->second_dongle->lock);
+	pthread_cond_broadcast(&coder->first_dongle->cond);
 	pthread_mutex_unlock(&coder->first_dongle->lock);
+	pthread_cond_broadcast(&coder->second_dongle->cond);
+	pthread_mutex_unlock(&coder->second_dongle->lock);
 }

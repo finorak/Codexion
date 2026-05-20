@@ -27,7 +27,6 @@ void	release(t_data *data)
 	}
 	pthread_mutex_destroy(&data->print_mutex);
 	pthread_mutex_destroy(&data->lock);
-	pthread_cond_destroy(&data->cond);
 }
 
 void	free_queue(t_queue	*queue)

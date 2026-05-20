@@ -6,7 +6,7 @@
 /*   By: finorako <finorako@student.42antananarivo  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/05/20 10:45:26 by finorako          #+#    #+#             */
-/*   Updated: 2026/05/20 10:52:44 by finorako         ###   ########.fr       */
+/*   Updated: 2026/05/20 11:36:20 by finorako         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,7 +16,7 @@
 static bool	fifo_scheduler(t_coder *coder,
 		t_queue *first_queue, t_queue *second_queue)
 {
-	if (!first_queue | !second_queue)
+	if (!first_queue || !second_queue)
 		return (false);
 	insert(&coder->first_dongle->queue, first_queue, coder->first_dongle);
 	insert(&coder->second_dongle->queue, second_queue, coder->second_dongle);

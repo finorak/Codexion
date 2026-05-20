@@ -6,7 +6,7 @@
 /*   By: finorako <finorako@student.42antananarivo  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/04/27 15:25:52 by finorako          #+#    #+#             */
-/*   Updated: 2026/05/20 10:51:47 by finorako         ###   ########.fr       */
+/*   Updated: 2026/05/20 11:47:33 by finorako         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -87,7 +87,6 @@ typedef struct s_data
 {
 	pthread_mutex_t		print_mutex;
 	pthread_mutex_t		lock;
-	pthread_cond_t		cond;
 	pthread_t			thread_id;
 	t_dongle			**dongles;
 	t_coder				**coders;
