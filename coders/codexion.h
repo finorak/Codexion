@@ -6,7 +6,7 @@
 /*   By: finorako <finorako@student.42antananarivo  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/04/27 15:25:52 by finorako          #+#    #+#             */
-/*   Updated: 2026/05/20 11:47:33 by finorako         ###   ########.fr       */
+/*   Updated: 2026/05/20 13:43:16 by finorako         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,6 +35,8 @@
 # define MIN_CODERS 1
 # define MIN_DONGLES 1
 
+// Just to tell the compiler that
+// we have those struct in our code
 typedef struct s_queue	t_queue;
 typedef struct s_data	t_data;
 typedef struct s_coder	t_coder;
@@ -62,6 +64,7 @@ typedef struct s_queue
 typedef struct s_dongle
 {
 	pthread_mutex_t		insert_lock;
+	pthread_mutex_t		queue_lock;
 	pthread_mutex_t		lock;
 	pthread_cond_t		cond;
 	t_queue				*queue;
@@ -142,6 +145,7 @@ void					addback(t_queue **queue, t_queue *new_queue);
 bool					insert(t_queue **queue, t_queue *new_queue,
 							t_dongle *dongle);
 void					pop_first(t_queue **queue, t_dongle *dongle);
+void					pop_last(t_queue **queue, t_dongle *dongle);
 
 // init functions
 t_dongle				*newdongle(int index);

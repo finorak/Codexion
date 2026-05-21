@@ -38,22 +38,18 @@ static bool	wait_dongle_availability(t_data *data, t_dongle *dongle,
 
 static bool	can_code(t_coder *coder)
 {
-	pthread_mutex_lock(&coder->first_dongle->lock);
 	if (!wait_dongle_availability(coder->data, coder->first_dongle,
 			coder->data->time.cooldown))
 	{
-		pop_first(&coder->first_dongle->queue, coder->first_dongle);
-		pop_first(&coder->second_dongle->queue, coder->second_dongle);
-		pthread_cond_broadcast(&coder->first_dongle->cond);
 		pthread_mutex_unlock(&coder->first_dongle->lock);
+		pthread_cond_broadcast(&coder->first_dongle->cond);
 		return (false);
 	}
 	print_log(coder, TAKE);
-	pthread_mutex_lock(&coder->second_dongle->lock);
 	if (!wait_dongle_availability(coder->data, coder->second_dongle,
 			coder->data->time.cooldown))
 	{
-		request_dongle(coder);
+		release_dongle(coder);
 		return (false);
 	}
 	print_log(coder, TAKE);
@@ -70,14 +66,9 @@ static bool	can_code(t_coder *coder)
  */
 bool	request_dongle(t_coder *coder)
 {
-	t_queue	*first_queue;
-	t_queue	*second_queue;
-
 	if (simulation_done(coder->data))
 		return (false);
-	first_queue = newqueue(coder);
-	second_queue = newqueue(coder);
-	if (!scheduler(coder, first_queue, second_queue))
+	if (!scheduler(coder, newqueue(coder), newqueue(coder)))
 		return (false);
 	if (!can_code(coder))
 		return (false);
@@ -96,8 +87,8 @@ void	release_dongle(t_coder *coder)
 	coder->second_dongle->last_cooldown_time = get_current_time();
 	pop_first(&coder->second_dongle->queue, coder->second_dongle);
 	pop_first(&coder->first_dongle->queue, coder->first_dongle);
-	pthread_cond_broadcast(&coder->first_dongle->cond);
 	pthread_mutex_unlock(&coder->first_dongle->lock);
-	pthread_cond_broadcast(&coder->second_dongle->cond);
+	pthread_cond_broadcast(&coder->first_dongle->cond);
 	pthread_mutex_unlock(&coder->second_dongle->lock);
+	pthread_cond_broadcast(&coder->second_dongle->cond);
 }
