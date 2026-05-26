@@ -10,55 +10,52 @@
 /*                                                                            */
 /* ************************************************************************** */
 
+#include <unistd.h>
 #include "codexion.h"
-#include <pthread.h>
 
 static bool	ordering_dongle(t_coder *coder)
 {
-	if (coder->first_dongle->index < coder->second_dongle->index)
+	t_dongle	*a;
+	t_dongle	*b;
+	t_dongle	*tmp;
+
+	a = coder->first_dongle;
+	b = coder->second_dongle;
+	if (a > b)
 	{
-		pthread_mutex_lock(&coder->first_dongle->lock);
-		pthread_mutex_lock(&coder->second_dongle->lock);
+		tmp = a;
+		a = b;
+		b = tmp;
 	}
-	else
-	{
-		pthread_mutex_lock(&coder->second_dongle->lock);
-		pthread_mutex_lock(&coder->first_dongle->lock);
-	}
+	pthread_mutex_lock(&a->lock);
+	pthread_mutex_lock(&b->lock);
 	if (simulation_done(coder->data))
 	{
-		pthread_mutex_unlock(&coder->first_dongle->lock);
-		pthread_mutex_unlock(&coder->second_dongle->lock);
+		pthread_mutex_unlock(&b->lock);
+		pthread_mutex_unlock(&a->lock);
 		return (false);
 	}
 	return (true);
 }
 
-static bool	fifo_scheduler(t_coder *coder,
+/*
+ * Just do a spin till we are the first on both dongle
+ */
+bool	fifo_scheduler(t_coder *coder,
 		t_queue *first_queue, t_queue *second_queue)
 {
 	if (!first_queue || !second_queue)
 		return (false);
 	insert(&coder->first_dongle->queue, first_queue, coder->first_dongle);
 	insert(&coder->second_dongle->queue, second_queue, coder->second_dongle);
-	if (!ordering_dongle(coder))
-		return (false);
 	while (!simulation_done(coder->data))
 	{
-		if (is_first(coder->first_dongle->queue, coder, coder->first_dongle)
-			&& is_first(coder->second_dongle->queue, coder,
-				coder->second_dongle))
-			return (true);
-		if (!is_first(coder->first_dongle->queue, coder, coder->first_dongle))
-			pthread_cond_wait(&coder->first_dongle->cond,
-				&coder->first_dongle->insert_lock);
-		if (!is_first(coder->second_dongle->queue, coder, coder->second_dongle))
-			pthread_cond_wait(&coder->second_dongle->cond,
-				&coder->second_dongle->insert_lock);
+		if (is_first(coder->first_dongle->queue, coder)
+			&& is_first(coder->second_dongle->queue, coder))
+			break ;
+		usleep(100);
 	}
-	pthread_mutex_unlock(&coder->first_dongle->insert_lock);
-	pthread_mutex_unlock(&coder->second_dongle->insert_lock);
-	return (false);
+	return (ordering_dongle(coder));
 }
 
 /*
@@ -74,8 +71,16 @@ static bool	edf_scheduler(t_coder *coder,
 {
 	if (!first_queue | !second_queue)
 		return (false);
-	(void)coder;
-	return (true);
+	based_insert(&coder->first_dongle->queue, coder, coder->first_dongle);
+	based_insert(&coder->second_dongle->queue, coder, coder->second_dongle);
+	while (!simulation_done(coder->data))
+	{
+		if (is_first(coder->first_dongle->queue, coder)
+			&& is_first(coder->second_dongle->queue, coder))
+			break ;
+		usleep(100);
+	}
+	return (ordering_dongle(coder));
 }
 
 bool	scheduler(t_coder *coder, t_queue *first_queue, t_queue *second_queue)

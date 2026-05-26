@@ -22,7 +22,6 @@ static void	init_thread_utils(t_data *data)
 	while (index < data->nb_dongles)
 	{
 		pthread_mutex_init(&data->dongles[index]->lock, NULL);
-		pthread_mutex_init(&data->dongles[index]->insert_lock, NULL);
 		pthread_mutex_init(&data->dongles[index]->queue_lock, NULL);
 		pthread_cond_init(&data->dongles[index]->cond, NULL);
 		index++;

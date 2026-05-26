@@ -34,6 +34,23 @@ bool	insert(t_queue **queue, t_queue *new_queue, t_dongle *dongle)
 }
 
 /*
+ * Verify if the coder is priority, if yes
+ * we swap the value of the first coder in queue
+ * and the current coder, else we just add it into
+ * the queue
+ */
+void	based_insert(t_queue **queue, t_coder *coder, t_dongle *dongle)
+{
+	long	deadline;
+
+	deadline = coder_compile_start(coder) + coder->data->time.burnout;
+	if (deadline > coder->data->time.burnout)
+		swap_coder(queue);
+	else
+		insert(queue, newqueue(coder), dongle);
+}
+
+/*
  * Poping the first queue from the dongle's queue
  */
 void	pop_first(t_queue **queue, t_dongle *dongle)

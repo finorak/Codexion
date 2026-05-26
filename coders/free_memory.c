@@ -22,7 +22,6 @@ void	release(t_data *data)
 	while (index < data->nb_coders)
 	{
 		pthread_mutex_destroy(&data->dongles[index]->lock);
-		pthread_mutex_destroy(&data->dongles[index]->insert_lock);
 		pthread_mutex_destroy(&data->dongles[index]->queue_lock);
 		pthread_cond_destroy(&data->dongles[index]->cond);
 		index++;

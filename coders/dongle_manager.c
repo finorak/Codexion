@@ -16,7 +16,7 @@
 /*
  * here we just wait till the cooldown is reached
 */
-static bool	wait_dongle_availability(t_data *data, t_dongle *dongle,
+bool	wait_dongle_availability(t_data *data, t_dongle *dongle,
 		long cooldown_ms)
 {
 	long	elapsed;
@@ -41,8 +41,7 @@ static bool	can_code(t_coder *coder)
 	if (!wait_dongle_availability(coder->data, coder->first_dongle,
 			coder->data->time.cooldown))
 	{
-		pthread_mutex_unlock(&coder->first_dongle->lock);
-		pthread_cond_broadcast(&coder->first_dongle->cond);
+		release_dongle(coder);
 		return (false);
 	}
 	print_log(coder, TAKE);
@@ -87,8 +86,18 @@ void	release_dongle(t_coder *coder)
 	coder->second_dongle->last_cooldown_time = get_current_time();
 	pop_first(&coder->second_dongle->queue, coder->second_dongle);
 	pop_first(&coder->first_dongle->queue, coder->first_dongle);
-	pthread_mutex_unlock(&coder->first_dongle->lock);
-	pthread_cond_broadcast(&coder->first_dongle->cond);
-	pthread_mutex_unlock(&coder->second_dongle->lock);
-	pthread_cond_broadcast(&coder->second_dongle->cond);
+	if (coder->first_dongle < coder->second_dongle)
+	{
+		pthread_cond_broadcast(&coder->first_dongle->cond);
+		pthread_mutex_unlock(&coder->first_dongle->lock);
+		pthread_cond_broadcast(&coder->second_dongle->cond);
+		pthread_mutex_unlock(&coder->second_dongle->lock);
+	}
+	else
+	{
+		pthread_cond_broadcast(&coder->second_dongle->cond);
+		pthread_mutex_unlock(&coder->second_dongle->lock);
+		pthread_cond_broadcast(&coder->first_dongle->cond);
+		pthread_mutex_unlock(&coder->first_dongle->lock);
+	}
 }

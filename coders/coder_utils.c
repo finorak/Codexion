@@ -32,17 +32,17 @@ void	update_coder_state(t_coder *coder)
 	pthread_mutex_unlock(&coder->data->lock);
 }
 
-bool	is_first(t_queue *queue, t_coder *coder, t_dongle *dongle)
+bool	is_first(t_queue *queue, t_coder *coder)
 {
 	bool	first;
 
 	first = false;
-	pthread_mutex_lock(&dongle->insert_lock);
+	pthread_mutex_lock(&coder->data->lock);
 	if (!queue)
 		first = false;
 	else
 		first = queue->coder == coder;
-	pthread_mutex_unlock(&dongle->insert_lock);
+	pthread_mutex_unlock(&coder->data->lock);
 	return (first);
 }
 

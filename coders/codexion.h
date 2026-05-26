@@ -63,7 +63,6 @@ typedef struct s_queue
 // contain the dongle's data
 typedef struct s_dongle
 {
-	pthread_mutex_t		insert_lock;
 	pthread_mutex_t		queue_lock;
 	pthread_mutex_t		lock;
 	pthread_cond_t		cond;
@@ -81,6 +80,7 @@ typedef struct s_coder
 	t_data				*data;
 	bool				is_burning;
 	long				last_compile_time;
+	long				last_compile_start;
 	int					compile_count;
 	int					index;
 }						t_coder;
@@ -126,9 +126,10 @@ int						thread_activated(t_data *data);
 void					*monitoring_thread(void *arg);
 void					update_coder_state(t_coder *coder);
 void					update_coder_burning_state(t_coder *coder, bool value);
+void					update_coder_last_compile_start(t_coder *coder);
+long					coder_compile_start(t_coder *coder);
 
 // scheduler functions
-
 bool					scheduler(t_coder *coder,
 							t_queue *first_queue, t_queue *second_queue);
 
@@ -139,13 +140,15 @@ bool					dongle_is_available(t_dongle *dongle, t_coder *coder);
 
 // queue manager functions
 t_queue					*newqueue(t_coder *coder);
-bool					is_first(t_queue *queue, t_coder *coder,
-							t_dongle *dongle);
+bool					is_first(t_queue *queue, t_coder *coder);
 void					addback(t_queue **queue, t_queue *new_queue);
 bool					insert(t_queue **queue, t_queue *new_queue,
 							t_dongle *dongle);
+void					swap_coder(t_queue **queue);
 void					pop_first(t_queue **queue, t_dongle *dongle);
 void					pop_last(t_queue **queue, t_dongle *dongle);
+void					based_insert(t_queue **queue, t_coder *coder,
+							t_dongle *dongle);
 
 // init functions
 t_dongle				*newdongle(int index);

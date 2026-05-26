@@ -19,18 +19,6 @@ void	update_thread_active(t_data *data)
 	pthread_mutex_unlock(&data->lock);
 }
 
-/*
-int	thread_activated(t_data *data)
-{
-	int	active;
-
-	active = 0;
-	pthread_mutex_lock(&data->lock);
-	active = data->thread_activated;
-	pthread_mutex_unlock(&data->lock);
-	return (active);
-}*/
-
 bool	simulation_done(t_data *data)
 {
 	bool	done;
@@ -47,4 +35,22 @@ void	update_coder_burning_state(t_coder *coder, bool value)
 	pthread_mutex_lock(&coder->data->lock);
 	coder->is_burning = value;
 	pthread_mutex_unlock(&coder->data->lock);
+}
+
+void	update_coder_last_compile_start(t_coder *coder)
+{
+	pthread_mutex_lock(&coder->data->lock);
+	coder->last_compile_time = get_current_time();
+	pthread_mutex_unlock(&coder->data->lock);
+}
+
+long	coder_compile_start(t_coder *coder)
+{
+	long	value;
+
+	value = 0;
+	pthread_mutex_lock(&coder->data->lock);
+	value = coder->last_compile_start;
+	pthread_mutex_unlock(&coder->data->lock);
+	return (value);
 }
