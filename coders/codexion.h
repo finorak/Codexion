@@ -144,8 +144,6 @@ bool					is_first(t_queue *queue, t_coder *coder);
 void					addback(t_queue **queue, t_queue *new_queue);
 bool					insert(t_queue **queue, t_queue *new_queue,
 							t_dongle *dongle);
-bool					swap_coder(t_queue **queue, t_coder *coder,
-							t_dongle *dongle);
 void					pop_first(t_queue **queue, t_dongle *dongle);
 void					pop_last(t_queue **queue, t_dongle *dongle);
 bool					custom_insert(t_queue **queue, t_coder *coder,
@@ -169,8 +167,4 @@ void					free_coders(t_coder **coder, int size);
 void					free_dongles(t_dongle **dongles, int size);
 void					cleanup(t_data *data);
 
-// debuger
-void					print_data(t_data *data);
-void					print_waitlst(t_queue *queue);
-void					print_coder_state(t_coder *coder);
 #endif

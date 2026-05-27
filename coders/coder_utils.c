@@ -11,7 +11,6 @@
 /* ************************************************************************** */
 
 #include "codexion.h"
-#include <stdbool.h>
 
 bool	coder_done_coding(t_coder *coder)
 {

@@ -33,27 +33,6 @@ bool	insert(t_queue **queue, t_queue *new_queue, t_dongle *dongle)
 	return (true);
 }
 
-bool	swap_coder(t_queue **queue, t_coder *coder, t_dongle *dongle)
-{
-	t_queue	*new_queue;
-
-	pthread_mutex_lock(&dongle->queue_lock);
-	if (!queue || !*queue)
-	{
-		new_queue = newqueue(coder);
-		if (!new_queue)
-		{
-			pthread_mutex_unlock(&dongle->queue_lock);
-			return (false);
-		}
-		addback(queue, newqueue(coder));
-		pthread_mutex_unlock(&dongle->queue_lock);
-		return (true);
-	}
-	pthread_mutex_unlock(&dongle->queue_lock);
-	return (true);
-}
-
 /*
  * Verify if the coder is priority, if yes
  * we swap the value of the first coder in queue

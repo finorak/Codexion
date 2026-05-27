@@ -1,6 +1,6 @@
 NAME = codexion
 
-SRC = main.c arg_utils.c debug.c ft_utils.c \
+SRC = main.c arg_utils.c ft_utils.c \
 	  init.c stack.c free_memory.c \
 	  thread.c codexion.c bench.c \
 	  codexion_utils.c dongle_manager.c \

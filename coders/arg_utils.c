@@ -11,7 +11,6 @@
 /* ************************************************************************** */
 
 #include <limits.h>
-#include <stdbool.h>
 #include "codexion.h"
 
 static bool	is_numeric(char *str)

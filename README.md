@@ -1,4 +1,4 @@
-_This project has been created as part of the 42 curriculum by finorako_
+**This project has been created as part of the 42 curriculum by finorako**
 
 # CODEXION
 
@@ -59,7 +59,9 @@ it prevented the coder to locking a dongle that it does not need at the moment.
 As the subject asked, a coder can only code if it has all the dongle
 so to prevent deadlock I handled that case manually. To see the full
 program in action i made it so that timer can only be more or
-equal to 10 ms each otherwise it is an error.
+equal to 10 ms each otherwise it is an error. To share dongle accros coders
+i gave them each dongle that is the one above and the same as their' index.
+so that at least on coder can code.
 
 ### DONGLE repartition
 
@@ -82,4 +84,37 @@ otherwise it don't do nothing to prevent from deadlock
 
 #### EDF scheduler
 
-This is a test
+This has been the most challenge i faced doing this project, as i didn't know how
+to use the deadline contraint. But to handle it, i just verified if the coder
+that is requesting a dongle is the earliest, if yes I put it in the first position
+of the queu if not i just insert it into the back.
+Preventing deadlock with this method was the tedious task, but I think I handle
+it well.
+
+## Thread synchronization mechanisms
+
+To accomplish this project, learning about shared data was the very crucial
+part, as if not handled correctly it is easy to encounter deadlock.
+I didn't use much `pthread_cond` in my solution as there are ways to do it without
+using it.
+
+- For my solution, i create n + 1 thread where n is the number of coders,
+  so that there are n coders and the last thread is the monitoring one, where
+  this verify if any coder has burned out or not, if yes, it send a **messages**
+  to all the coders that the simulation is done, and that ends the simulation.
+
+- For the logging system, i create a separate mutex for it, so that coders
+  can't show log if it's locked, because stdout is a shared memory.
+
+- Each dongle has it's own mutex as I represented a dongle as a mutex.
+
+### How race conditions are prevented
+
+- As I said before in **Thread synchromization mechanisms** stdout is also a shared memroy,
+  so to avoid a race condition on shared memory I create a separet mutex for data that are shared,
+  but that might slow the program so I only created a few mutex
+
+- The comunication between monitor and coders is done by a single mutex inside the
+  struct `t_data` where if it is locked all coder that is using at the time will all
+  stop and wait for the response gotten from the `monitoring` system.
+
