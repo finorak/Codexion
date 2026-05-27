@@ -33,25 +33,63 @@ bool	insert(t_queue **queue, t_queue *new_queue, t_dongle *dongle)
 	return (true);
 }
 
+bool	swap_coder(t_queue **queue, t_coder *coder, t_dongle *dongle)
+{
+	t_queue	*new_queue;
+
+	pthread_mutex_lock(&dongle->queue_lock);
+	if (!queue || !*queue)
+	{
+		new_queue = newqueue(coder);
+		if (!new_queue)
+		{
+			pthread_mutex_unlock(&dongle->queue_lock);
+			return (false);
+		}
+		addback(queue, newqueue(coder));
+		pthread_mutex_unlock(&dongle->queue_lock);
+		return (true);
+	}
+	pthread_mutex_unlock(&dongle->queue_lock);
+	return (true);
+}
+
 /*
  * Verify if the coder is priority, if yes
  * we swap the value of the first coder in queue
  * and the current coder, else we just add it into
  * the queue
  */
-void	based_insert(t_queue **queue, t_coder *coder, t_dongle *dongle)
+bool	custom_insert(t_queue **queue, t_coder *coder, t_dongle *dongle)
 {
 	long	deadline;
 
+	pthread_mutex_lock(&dongle->queue_lock);
+	if (!queue || !*queue)
+	{
+		addback(queue, newqueue(coder));
+		pthread_mutex_unlock(&dongle->queue_lock);
+		return (true);
+	}
 	deadline = coder_compile_start(coder) + coder->data->time.burnout;
-	if (deadline > coder->data->time.burnout)
-		swap_coder(queue);
-	else
-		insert(queue, newqueue(coder), dongle);
+	if (coder_compile_start((*queue)->coder) + coder->data->time.burnout
+		< deadline)
+	{
+		if (!push(queue, newqueue(coder)))
+		{
+			pthread_mutex_unlock(&dongle->queue_lock);
+			return (false);
+		}
+		pthread_mutex_unlock(&dongle->queue_lock);
+		return (true);
+	}
+	pthread_mutex_unlock(&dongle->queue_lock);
+	return (true);
 }
 
 /*
  * Poping the first queue from the dongle's queue
+ * so that other coder can use that dongle
  */
 void	pop_first(t_queue **queue, t_dongle *dongle)
 {
@@ -70,34 +108,13 @@ void	pop_first(t_queue **queue, t_dongle *dongle)
 }
 
 /*
- * Locking the appropriate queue
- * We then iterat through the queue
- * after that we remove that last item
- * and then unlock the queue to prevent
- * from deadlock
+ * Same as pop_first but with this, we do not lock
+ * any mutex in it, because it will just be used
+ * by the coder who call it
  */
-void	pop_last(t_queue **queue, t_dongle *dongle)
+bool	push(t_queue **queue, t_queue *new_queue)
 {
-	t_queue	*temp;
-	t_queue	*prev;
-
-	pthread_mutex_lock(&dongle->queue_lock);
-	if (!queue || !*queue)
-	{
-		pthread_mutex_unlock(&dongle->queue_lock);
-		return ;
-	}
-	temp = *queue;
-	prev = NULL;
-	while (temp->next)
-	{
-		prev = temp;
-		temp = temp->next;
-	}
-	if (prev)
-		prev->next = NULL;
-	else
-		*queue = NULL;
-	free(temp);
-	pthread_mutex_unlock(&dongle->queue_lock);
+	(void)queue;
+	(void)new_queue;
+	return (true);
 }

@@ -19,6 +19,8 @@ static bool	ordering_dongle(t_coder *coder)
 	t_dongle	*b;
 	t_dongle	*tmp;
 
+	if (simulation_done(coder->data))
+		return (false);
 	a = coder->first_dongle;
 	b = coder->second_dongle;
 	if (a > b)
@@ -40,14 +42,18 @@ static bool	ordering_dongle(t_coder *coder)
 
 /*
  * Just do a spin till we are the first on both dongle
+ * if we are the first on both dongle, we break the loop,
+ * so that the coder can proceed to the next step
  */
 bool	fifo_scheduler(t_coder *coder,
 		t_queue *first_queue, t_queue *second_queue)
 {
 	if (!first_queue || !second_queue)
 		return (false);
-	insert(&coder->first_dongle->queue, first_queue, coder->first_dongle);
-	insert(&coder->second_dongle->queue, second_queue, coder->second_dongle);
+	if (!insert(&coder->first_dongle->queue, first_queue, coder->first_dongle)
+		|| !insert(&coder->second_dongle->queue, second_queue,
+			coder->second_dongle))
+		return (false);
 	while (!simulation_done(coder->data))
 	{
 		if (is_first(coder->first_dongle->queue, coder)
@@ -71,8 +77,10 @@ static bool	edf_scheduler(t_coder *coder,
 {
 	if (!first_queue | !second_queue)
 		return (false);
-	based_insert(&coder->first_dongle->queue, coder, coder->first_dongle);
-	based_insert(&coder->second_dongle->queue, coder, coder->second_dongle);
+	if (!custom_insert(&coder->first_dongle->queue, coder, coder->first_dongle)
+		|| !custom_insert(&coder->second_dongle->queue,
+			coder, coder->second_dongle))
+		return (false);
 	while (!simulation_done(coder->data))
 	{
 		if (is_first(coder->first_dongle->queue, coder)
