@@ -91,6 +91,25 @@ of the queu if not i just insert it into the back.
 Preventing deadlock with this method was the tedious task, but I think I handle
 it well.
 
+### Starvation prevention
+
+To prevent starvation for each coder, for every time a coder
+request a dongle, I give the dongle that has superior index
+for the coder so that it prevent deadlock. It ensure
+that at least one coder is able to code.
+
+### Cooldown handling
+
+To see if the cooldown is achieved yet, I just create a varibale
+for each `struct` that use a cooldown system, and verify if
+that variable is reusable again, that's how I handle cooldown
+
+### Burnout
+
+To achieve a near perfect detection of burnout I used a function
+that just do a simple spinlock for a very small milliseconds.
+That give me a near perfect elapstime
+
 ## Thread synchronization mechanisms
 
 To accomplish this project, learning about shared data was the very crucial
