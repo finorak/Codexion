@@ -83,6 +83,8 @@ bool	custom_insert(t_queue **queue, t_coder *coder, t_dongle *dongle)
 		pthread_mutex_unlock(&dongle->queue_lock);
 		return (true);
 	}
+	else
+		addback(queue, newqueue(coder));
 	pthread_mutex_unlock(&dongle->queue_lock);
 	return (true);
 }
