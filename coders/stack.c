@@ -24,6 +24,7 @@ t_coder	*newcoder(t_data *data, int index)
 	coder->compile_count = 0;
 	coder->last_compile_time = data->time.start_time;
 	coder->is_burning = true;
+	coder->last_compile_start = data->time.start_time;
 	return (coder);
 }
 

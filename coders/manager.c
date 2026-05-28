@@ -34,19 +34,26 @@ bool	insert(t_queue **queue, t_queue *new_queue, t_dongle *dongle)
 }
 
 /*
+ * Because of the 25 line constraint
+ * I use this function to alevate the number
+ * of lines inside custom_insert
+ */
+
+/*
  * Verify if the coder is priority, if yes
  * we swap the value of the first coder in queue
  * and the current coder, else we just add it into
  * the queue
  */
-bool	custom_insert(t_queue **queue, t_coder *coder, t_dongle *dongle)
+bool	custom_insert(t_queue **queue, t_coder *coder,
+		t_dongle *dongle, t_queue *new_queue)
 {
 	long	deadline;
 
 	pthread_mutex_lock(&dongle->queue_lock);
 	if (!queue || !*queue)
 	{
-		addback(queue, newqueue(coder));
+		addback(queue, new_queue);
 		pthread_mutex_unlock(&dongle->queue_lock);
 		return (true);
 	}
@@ -54,7 +61,7 @@ bool	custom_insert(t_queue **queue, t_coder *coder, t_dongle *dongle)
 	if (coder_compile_start((*queue)->coder) + coder->data->time.burnout
 		< deadline)
 	{
-		if (!push(queue, newqueue(coder)))
+		if (!push(queue, new_queue))
 		{
 			pthread_mutex_unlock(&dongle->queue_lock);
 			return (false);
@@ -63,7 +70,7 @@ bool	custom_insert(t_queue **queue, t_coder *coder, t_dongle *dongle)
 		return (true);
 	}
 	else
-		addback(queue, newqueue(coder));
+		addback(queue, new_queue);
 	pthread_mutex_unlock(&dongle->queue_lock);
 	return (true);
 }
@@ -95,7 +102,9 @@ void	pop_first(t_queue **queue, t_dongle *dongle)
  */
 bool	push(t_queue **queue, t_queue *new_queue)
 {
-	(void)queue;
-	(void)new_queue;
+	if (!queue || !*queue || new_queue)
+		return (false);
+	new_queue->next = *queue;
+	*queue = new_queue;
 	return (true);
 }

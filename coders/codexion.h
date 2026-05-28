@@ -147,7 +147,7 @@ bool					insert(t_queue **queue, t_queue *new_queue,
 void					pop_first(t_queue **queue, t_dongle *dongle);
 void					pop_last(t_queue **queue, t_dongle *dongle);
 bool					custom_insert(t_queue **queue, t_coder *coder,
-							t_dongle *dongle);
+							t_dongle *dongle, t_queue *new_queue);
 
 // init functions
 t_dongle				*newdongle(int index);

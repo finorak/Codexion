@@ -65,9 +65,21 @@ static bool	can_code(t_coder *coder)
  */
 bool	request_dongle(t_coder *coder)
 {
+	t_queue	*first_queue;
+	t_queue	*second_queue;
+
+	first_queue = newqueue(coder);
+	if (!first_queue)
+		return (false);
+	second_queue = newqueue(coder);
+	if (!second_queue)
+	{
+		free(first_queue);
+		return (false);
+	}
 	if (simulation_done(coder->data))
 		return (false);
-	if (!scheduler(coder, newqueue(coder), newqueue(coder)))
+	if (!scheduler(coder, first_queue, second_queue))
 		return (false);
 	if (!can_code(coder))
 		return (false);

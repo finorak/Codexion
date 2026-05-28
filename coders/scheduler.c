@@ -48,20 +48,24 @@ static bool	ordering_dongle(t_coder *coder)
 bool	fifo_scheduler(t_coder *coder,
 		t_queue *first_queue, t_queue *second_queue)
 {
-	if (!first_queue || !second_queue)
-		return (false);
 	if (!insert(&coder->first_dongle->queue, first_queue, coder->first_dongle)
 		|| !insert(&coder->second_dongle->queue, second_queue,
 			coder->second_dongle))
+	{
+		free(first_queue);
+		free(second_queue);
 		return (false);
+	}
 	while (!simulation_done(coder->data))
 	{
 		if (is_first(coder->first_dongle->queue, coder)
 			&& is_first(coder->second_dongle->queue, coder))
-			break ;
+			return (ordering_dongle(coder));
 		usleep(100);
 	}
-	return (ordering_dongle(coder));
+	free(first_queue);
+	free(second_queue);
+	return (false);
 }
 
 /*
@@ -75,20 +79,25 @@ bool	fifo_scheduler(t_coder *coder,
 static bool	edf_scheduler(t_coder *coder,
 		t_queue *first_queue, t_queue *second_queue)
 {
-	if (!first_queue | !second_queue)
-		return (false);
-	if (!custom_insert(&coder->first_dongle->queue, coder, coder->first_dongle)
+	if (!custom_insert(&coder->first_dongle->queue, coder,
+			coder->first_dongle, first_queue)
 		|| !custom_insert(&coder->second_dongle->queue,
-			coder, coder->second_dongle))
+			coder, coder->second_dongle, second_queue))
+	{
+		free(first_queue);
+		free(second_queue);
 		return (false);
+	}
 	while (!simulation_done(coder->data))
 	{
 		if (is_first(coder->first_dongle->queue, coder)
 			&& is_first(coder->second_dongle->queue, coder))
-			break ;
+			return (ordering_dongle(coder));
 		usleep(100);
 	}
-	return (ordering_dongle(coder));
+	free(first_queue);
+	free(second_queue);
+	return (false);
 }
 
 bool	scheduler(t_coder *coder, t_queue *first_queue, t_queue *second_queue)
